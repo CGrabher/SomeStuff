@@ -4,7 +4,13 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Faculty_Loop x = new Faculty_Loop();
+
+            //x.FacultyLoop(27);
+
+            Faculty_Recursive y = new Faculty_Recursive();
+
+            Console.WriteLine(y.FacultyRecursive(5));
         }
     }
 }
