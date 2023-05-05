@@ -31,18 +31,17 @@ public class ArrayListTests
         Assert.That(count, Is.EqualTo(0));
     }
 
-    [Test]
-    public void ItShouldCountAddedElements()
+    [TestCase(1,4)]
+    [TestCase(2,5)]
+    [TestCase(3,5)]
+    public void ItShouldCountAddedElements(int element, int ListCount)
     {
         // ARRANGE 
-        var testList = new MyArrayList<int>();
+        var testList = GetTestList(ListCount);
         // ACT 
-        testList.Add(1);
-        testList.Add(2);
-        testList.Add(3);
-        testList.Add(4);
-        // ASSERT count should be 3
-        Assert.That(testList.Count, Is.EqualTo(4));
+        testList.Add(element);
+        // ASSERT Count should be ListCount
+        Assert.That(testList.Count, Is.EqualTo(ListCount + 1));
     }
 
     [Test]
@@ -59,17 +58,17 @@ public class ArrayListTests
         Assert.That(testList[1], Is.EqualTo(2));
     }
 
-    [Test]
-    public void Index_Get_ReturnsRightValues()
+    [TestCase(0,0)]
+    [TestCase(1,1)]
+    [TestCase(2,2)]
+    [TestCase(3,3)]
+    public void Index_Get_ReturnsRightValues(int index, int element)
     {
         // ARRANGE 
         var testList = GetTestList(4);
 
         // ACT & ASSERT should return them in the same order
-        Assert.That(testList[0], Is.EqualTo(0));
-        Assert.That(testList[1], Is.EqualTo(1));
-        Assert.That(testList[2], Is.EqualTo(2));
-        Assert.That(testList[3], Is.EqualTo(3));
+        Assert.That(testList[index], Is.EqualTo(element));
     }
 
     [TestCase(0)]
@@ -136,9 +135,6 @@ public class ArrayListTests
 
         //ASSERT i should get a true back
         Assert.That(result, Is.EqualTo(expected));
-
-
-
     }
 
     [Test]
@@ -192,7 +188,6 @@ public class ArrayListTests
     }
 
     [Test]
-
     public void RemoveShouldRemoveTheCorrectElement()
     {
         //ARRANGE 
@@ -222,7 +217,6 @@ public class ArrayListTests
         Assert.That(testList.Get(0), Is.EqualTo(1));
     }
 
-
     [TestCase(-1, 2)]
     [TestCase(5, 2)]
 
@@ -231,7 +225,6 @@ public class ArrayListTests
 
     [TestCase(-1, 5)]
     [TestCase(5, -1)]
-
     public void SwapOutOfRange_ShouldThrowException(int indexA, int indexB)
     {
         var testList = GetTestList(5);
@@ -261,16 +254,4 @@ public class ArrayListTests
     //    Assert.DoesNotThrow(() => list.EnsureIndexInRange(0));
 
     //}
-
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
 }  

@@ -12,6 +12,7 @@
             ll.Add(30);
             ll.Add(40);
             ll.Add(50);
+            ll.Remove(3);
             Console.WriteLine(ll.ToString());
             Console.WriteLine(ll.Count());
             Console.WriteLine(ll.Get(3));

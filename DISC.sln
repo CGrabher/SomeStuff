@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrayList", "ArrayList\ArrayList.csproj", "{19DFCDF9-46B6-4355-A902-D0DBE0475A14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrayAndLinkedList", "ArrayList\ArrayAndLinkedList.csproj", "{19DFCDF9-46B6-4355-A902-D0DBE0475A14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayListTests", "ArrayListTests\ArrayListTests.csproj", "{B3EC658B-8C21-435F-9620-66ED089C4926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrayAndLinkedListTests", "ArrayListTests\ArrayAndLinkedListTests.csproj", "{B3EC658B-8C21-435F-9620-66ED089C4926}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
