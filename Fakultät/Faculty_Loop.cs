@@ -8,9 +8,9 @@ namespace Fakultät
 {
     internal class Faculty_Loop
     {
-        public decimal FacultyLoop(decimal num)
+        public ulong FacultyLoop(ulong num)
         {
-            for (decimal i = num - 1; i > 0; i--)
+            for (ulong i = num - 1; i > 0; i--)
             {
                 Console.Write(num + "*" + i + " = ");
                 num = num * i;

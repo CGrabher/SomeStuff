@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrayAndLinkedList", "Array
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrayAndLinkedListTests", "ArrayListTests\ArrayAndLinkedListTests.csproj", "{B3EC658B-8C21-435F-9620-66ED089C4926}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fakultät", "Fakultät\Fakultät.csproj", "{559ACCE9-6EA4-4CB9-90FF-36B8CF6A740C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples", "Fakultät\Examples.csproj", "{559ACCE9-6EA4-4CB9-90FF-36B8CF6A740C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
