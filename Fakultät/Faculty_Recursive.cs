@@ -23,7 +23,6 @@ namespace Fakultät
                     {
                         return num * FacultyRecursive(num - 1);
                     }
-
                 }
                 catch (OverflowException)
                 {

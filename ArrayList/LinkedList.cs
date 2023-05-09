@@ -9,12 +9,6 @@ namespace ArrayList
     public class MyLinkedList<T>
     {
         private Node<T>? _start = null;
-        private int _count = 0;
-
-        public int Counter
-        {
-            get { return _count; }
-        }
 
         public MyLinkedList() { }
 
@@ -53,7 +47,7 @@ namespace ArrayList
 
         public void Clear()
         {
-            _start = null;
+           _start = null;
         }
 
         public bool Contains(T item)
@@ -72,7 +66,7 @@ namespace ArrayList
 
             while (n != null)
             {
-                if (n.Value.Equals(item))
+                if (n.Value!.Equals(item))
                 {
                     return true;
                 }
@@ -96,7 +90,7 @@ namespace ArrayList
 
         private Node<T> GetNodeAt(int index)
         {
-            EnsureIndexInRange(index);
+
             var n = _start;
 
             for (int i = 0; i < index; i++)
@@ -105,19 +99,37 @@ namespace ArrayList
             }
             return n;
         }
-
-        public T Get(int index)
+        public T GetElementAt(int index)
         {
-            return GetNodeAt(index).Value;
+            EnsureIndexInRange(index);
+
+            var node = GetNodeAt(index);
+            return node.Value;
         }
 
+        public T Get(int index) => this[index];
+        public T this[int index]
+        {
+            get
+            {
+                EnsureIndexInRange(index); 
+                var node = GetNodeAt(index);
+                return node.Value;
+            }
+            set
+            {
+                EnsureIndexInRange(index);
+                var node = GetNodeAt(index);
+                node.Value = value;
+            }
+        }
         public void Insert(int index, T item)
         {
             EnsureIndexInRange(index);
+            var newNode = new Node<T>(item);
             if (index == 0)
             {
                 //insert at beginning
-                var newNode = new Node<T>(item);
                 newNode.Next = _start;
                 _start = newNode;
             }
@@ -125,7 +137,6 @@ namespace ArrayList
             {
                 //insert after specified index
                 var previousNode = GetNodeAt(index - 1);
-                var newNode = new Node<T>(item);
                 newNode.Next = previousNode.Next;
                 previousNode.Next = newNode;
             }
@@ -133,23 +144,45 @@ namespace ArrayList
 
         public void Remove(T item)
         {
-            IsStartNull();
-            var n = _start;
-            while (n.Next != null)
+            // Fall 1 Element  -  testcase anfang ende
+
+            if (_start is null)
+            { return; }
+            else
             {
-                n = n.Next;
-                if(n.Value.Equals(item))
+                if (_start.Value!.Equals(item))
                 {
-                    n.Next = n.Next.Next;
-                    return;
+                    _start = null;
                 }
-               n = n.Next;
+                else
+                {
+                    var n = _start;
+                    while (n.Next != null)
+                    {
+                        if (n.Next.Value!.Equals(item))
+                        {
+                            n.Next = n.Next.Next;
+                            return;
+                        }
+                        n = n.Next;
+                    }
+                }
             }
         }
         public void RemoveAt(int index)
         {
-           var n = GetNodeAt(index - 1);
-            n.Next = n.Next.Next;
+            //if index 0 extend
+            Node<T> n = GetNodeAt(index);
+            if(index == 0)
+            { 
+                _start = n.Next;
+            }
+            else
+            {
+                EnsureIndexInRange(index);
+                n = GetNodeAt(index - 1);
+                n.Next = n.Next!.Next;
+            }
         }
 
         public void Swap(int indexA, int indexB)
@@ -163,17 +196,19 @@ namespace ArrayList
             (a.Value, b.Value) = (b.Value, a.Value);
         }
 
+        //private void EnsureIndexInRange(int index)
+        //{
+        //    if (index < 0 || index >= Count())
+        //        throw new ArgumentOutOfRangeException();
+        //}
         private void EnsureIndexInRange(int index)
         {
-            if (index < 0 || index >= Count())
-                throw new ArgumentOutOfRangeException();
+            int count = Count();
+            if (index < 0 || index >= count)
+                throw new ArgumentOutOfRangeException(nameof(index),
+                    $"Index '{index}' is out of range. Must be between 0 and {count - 1}.");
         }
-        private void IsStartNull()
-        {
-            if(_start == null)
-            {
-                throw new ArgumentNullException();
-            }
-        }
+
+
     }
 }

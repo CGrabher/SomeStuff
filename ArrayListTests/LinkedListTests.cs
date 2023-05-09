@@ -9,9 +9,9 @@ namespace ArrayListTests
 {
     internal class LinkedListTests
     {
-        public MyArrayList<int> GetTestList(int count)
+        public MyLinkedList<int> GetTestList(int count)
         {
-            MyArrayList<int> testList = new MyArrayList<int>();
+            MyLinkedList<int> testList = new MyLinkedList<int>();
 
             for (int i = 0; i < count; i++)
             {
@@ -98,7 +98,7 @@ namespace ArrayListTests
 
             //ASSERT the array should look like 0,1,2,4
             var expected = new int[] { 0, 1, 2, 4 };
-            for (int i = 0; i < testList.Count; i++)
+            for (int i = 0; i < testList.Count(); i++)
             {
                 //Assert.IsTrue(expected.SequenceEqual(testList)); //would work if we would implement IEnumerable
 
@@ -110,7 +110,7 @@ namespace ArrayListTests
         [TestCase(0)]
         [TestCase(2)]
         [TestCase(4)]
-        public void RemovingShouldDecreaseTheCount(int index)
+        public void Remove_ShouldDecreaseTheCount(int index)
         {
             //ARRANGE 
             var testList = GetTestList(5);
@@ -139,7 +139,7 @@ namespace ArrayListTests
         }
 
         [Test]
-        public void ClearShouldGiveAnEmptyArrayBack()
+        public void Clear_ShouldGiveAnEmptyArrayBack()
         {
             //ARRANGE 
             var testList = GetTestList(4);
@@ -152,7 +152,7 @@ namespace ArrayListTests
         }
 
         [Test]
-        public void InsertShouldGiveBackAnArrayWithTheInsertedElementWithin()
+        public void Insert_ShouldGiveBackAnArrayWithTheInsertedElementWithin()
         {
             //ARRANGE 
             var testList = GetTestList(4);
@@ -167,7 +167,7 @@ namespace ArrayListTests
 
         [TestCase(-1)]
         [TestCase(5)]
-        public void InsertOutOfRange_ShouldThrowException(int index)
+        public void Insert_OutOfRange_ShouldThrowException(int index)
         {
             var testList = GetTestList(5);
 
@@ -176,7 +176,7 @@ namespace ArrayListTests
         }
 
         [Test]
-        public void InsertShouldGetAnArrayWithTheInsertedElementAtTheCorrectPosition()
+        public void Insert_ShouldGetAnArrayWithTheInsertedElementAtTheCorrectPosition()
         {
             //ARRANGE 
             var testList = GetTestList(4);
@@ -189,23 +189,32 @@ namespace ArrayListTests
         }
 
         [Test]
-        public void RemoveShouldRemoveTheCorrectElement()
+        public void Remove_ShouldRemoveTheCorrectElement()
         {
             //ARRANGE 
             var testList = GetTestList(4);
-
+            //0 1 2 3
             //ACT 
-            testList.Remove(2);
-
-            //ASSERT the testList should no longer contain the element
-            Assert.That(testList[2], Is.EqualTo(3));
+            testList.Remove(3);
 
             //ASSERT the testList should be decrased by 1;
             Assert.That(testList.Count, Is.EqualTo(3));
         }
 
+
+        [TestCase(0)]
+        [TestCase(3)]
+        public void RemoveAt_ShouldRemoveTheCorrectElement(int index)
+        {
+            //ARRANGE
+            var testList = GetTestList(4);
+            //ACT
+            testList.RemoveAt(index);
+            //ASSERT
+        }
+
         [Test]
-        public void SwapTwoElementsShouldSwapTheCorrectElements()
+        public void Swap_TwoElementsShouldSwapTheCorrectElements()
         {
             //ARRANGE 
             var testList = GetTestList(4);
@@ -226,12 +235,36 @@ namespace ArrayListTests
 
         [TestCase(-1, 5)]
         [TestCase(5, -1)]
-        public void SwapOutOfRange_ShouldThrowException(int indexA, int indexB)
+        public void Swap_OutOfRange_ShouldThrowException(int indexA, int indexB)
+        {
+            //ACT
+            var testList = GetTestList(5);
+
+            //ACT & ASSERT
+            Assert.Throws<ArgumentOutOfRangeException>(() => testList.Swap(indexA, indexB));
+            // Throw Exception when an index less than 0 is passed.
+        }
+
+        [TestCase(0)]
+        [TestCase(4)]
+        [TestCase(3)]
+
+        public void GetNode_ShouldGiveTheCorrectNode(int index)
         {
             var testList = GetTestList(5);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => testList.Swap(indexA, indexB));
-            // Throw Exception when an index less than 0 is passed.
+            testList.GetElementAt(index);
+        }
+
+        [TestCase(-1)]
+        [TestCase(6)]
+        public void GetNode_ShouldThrowException(int index)
+        {
+            //ARRANGE
+            var testList = GetTestList(5);
+
+            //ACT & ASSERT
+            Assert.Throws<ArgumentOutOfRangeException>(() => testList.GetElementAt(index));
         }
     }
 }

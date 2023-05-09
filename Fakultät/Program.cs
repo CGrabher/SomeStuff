@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks.Sources;
+﻿using Examples;
+using System.Threading.Tasks.Sources;
 
 namespace Fakultät
 
@@ -7,14 +8,17 @@ namespace Fakultät
     {
         static void Main(string[] args)
         {
-            //Faculty_Loop x = new Faculty_Loop();
+            Faculty_Loop x = new Faculty_Loop();
 
-            //x.FacultyLoop(30);
-            
+            x.FacultyLoop(20); //max 20
 
             Faculty_Recursive y = new Faculty_Recursive();
 
-            Console.WriteLine(y.FacultyRecursive(25));
+            Console.WriteLine("Recursive Faculty: " + y.FacultyRecursive(20));
+
+            Fibonacci z = new Fibonacci();
+
+            z.Fibonacci_sequence(92); //max 92
         }
     }
 }
