@@ -10,13 +10,30 @@ namespace Fakultät
     {
         public ulong FacultyLoop(ulong num)
         {
-            for (ulong i = num - 1; i > 0; i--)
+            if (num == 0)
             {
-                Console.Write(num + "*" + i + " = ");
-                num = num * i;
-                Console.Write(num + "\n");
+                return 1;
             }
-            return num;
+            else
+            {
+                try
+                {
+                    checked
+                    {
+                        for (ulong i = num - 1; i > 0; i--)
+                        {
+                            Console.Write(num + "*" + i + " = ");
+                            num = num * i;
+                            Console.Write(num + "\n");
+                        }
+                        return num;
+                    }
+                }
+                catch (OverflowException)
+                {
+                    throw new OverflowException("Overflow at num: " + num);
+                }
+            }
         }
     }
 }

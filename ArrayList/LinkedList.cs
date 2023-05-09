@@ -146,7 +146,6 @@ namespace ArrayList
                n = n.Next;
             }
         }
-
         public void RemoveAt(int index)
         {
            var n = GetNodeAt(index - 1);

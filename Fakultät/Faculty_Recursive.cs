@@ -11,7 +11,6 @@ namespace Fakultät
     {
         public ulong FacultyRecursive(ulong num)
         {
-            // Basisfall: Wenn num 0 ist, ist die Fakultät 1
             if (num == 0)
             {
                 return 1;
@@ -30,12 +29,7 @@ namespace Fakultät
                 {
                     throw new OverflowException("Overflow at num: " + num);
                 }
- 
-            }
-
-
-
-
             }
         }
     }
+}
