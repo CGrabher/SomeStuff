@@ -15,20 +15,19 @@ namespace Fakultät
             {
                 return 1;
             }
-            else
+            
+            try
             {
-                try
+                checked
                 {
-                    checked
-                    {
-                        return num * FacultyRecursive(num - 1);
-                    }
-                }
-                catch (OverflowException)
-                {
-                    throw new OverflowException("Overflow at num: " + num);
+                    return num * FacultyRecursive(num - 1);
                 }
             }
+            catch (OverflowException)
+            {
+                throw new OverflowException("Overflow at num: " + num);
+            }
+            
         }
     }
 }

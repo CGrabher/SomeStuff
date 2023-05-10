@@ -244,15 +244,17 @@ namespace ArrayListTests
             //Throw Exception when an index less than 0 is passed.
         }
 
-        [TestCase(0)]
-        [TestCase(4)]
-        [TestCase(3)]
+        [TestCase(0, 0)]
+        [TestCase(4, 4)]
+        [TestCase(3, 3)]
 
-        public void GetNodeAt_ShouldGiveTheCorrectNode(int index)
+        public void Get_ShouldGiveTheCorrectNode(int index, int expected)
         {
             var testList = GetTestList(5);
 
-            testList.GetElementAt(index);
+            var result = testList[index];
+
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [TestCase(-1)]

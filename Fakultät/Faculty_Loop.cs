@@ -14,26 +14,23 @@ namespace Fakultät
             {
                 return 1;
             }
-            else
+            
+            try
             {
-                try
+                checked
                 {
-                    checked
-                    {
-                        for (ulong i = num - 1; i > 0; i--)
-                        {
-                            Console.Write(num + "*" + i + " = ");
-                            num = num * i;
-                            Console.Write(num + "\n");
-                        }
-                        return num;
+                    for (ulong i = num - 1; i > 0; i--)
+                    {                       
+                        num *= i;
                     }
-                }
-                catch (OverflowException)
-                {
-                    throw new OverflowException("Overflow at num: " + num);
+                    return num;
                 }
             }
+            catch (OverflowException)
+            {
+                throw new OverflowException("Overflow at num: " + num);
+            }
+            
         }
     }
 }

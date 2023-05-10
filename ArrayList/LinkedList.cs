@@ -33,16 +33,28 @@ namespace ArrayList
             }
         }
 
-        public override String ToString()
-        {
-            var text = "_start";
+        public override string ToString()
+        {            
+
+            //var a = "Bob";
+            //var b = "Sieger";
+
+            //var c = a + " " + b;
+            //c = string.Format("{0} {1}", a, b);
+            //c = $"{a} {b}";
+
+
+            var sb = new StringBuilder();
+            sb.Append("|");
+                       
             var n = _start;
             while (n != null)
             {
-                text += "-->(" + n.Value + ")";
+                sb.Append("-->(" + n.Value + ")");
                 n = n.Next;
             }
-            return text;
+            
+            return sb.ToString();           
         }
 
         public void Clear()
@@ -53,19 +65,16 @@ namespace ArrayList
         public bool Contains(T item)
         {
             var n = _start;
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
-
-            if (_start == null)
-            {
-                return false;
-            }
+            
 
             while (n != null)
             {
-                if (n.Value!.Equals(item))
+                if (n.Value is null)
+                {
+                    if (item is null)
+                        return true;
+                }
+                else if (n.Value.Equals(item))
                 {
                     return true;
                 }
@@ -145,27 +154,34 @@ namespace ArrayList
             // Fall 1 Element  -  testcase anfang ende
 
             if (_start is null)
-            { return; }
-            else
-            {
-                if (_start.Value!.Equals(item))
-                {
-                    _start = null;
-                }
-                else
-                {
-                    var n = _start;
-                    while (n.Next != null)
-                    {
-                        if (n.Next.Value!.Equals(item))
-                        {
-                            n.Next = n.Next.Next;
-                            return;
-                        }
-                        n = n.Next;
-                    }
-                }
+            { 
+                return; 
             }
+            //start cant be null here
+
+           
+            if (_start.Value!.Equals(item))
+            {
+                //_start = null;
+
+                _start = _start.Next;
+                return;
+            }
+            //we did not find the item in start
+
+
+            var n = _start;
+            while (n.Next != null)
+            {
+                if (n.Next.Value!.Equals(item))
+                {
+                    n.Next = n.Next.Next;
+                    return;
+                }
+                n = n.Next;
+            }
+            
+            
         }
         public void RemoveAt(int index)
         {
@@ -174,13 +190,14 @@ namespace ArrayList
             if(index == 0)
             { 
                 _start = n.Next;
+                return;
             }
-            else
-            {
-                EnsureIndexInRange(index);
-                n = GetNodeAt(index - 1);
-                n.Next = n.Next!.Next;
-            }
+            //we already handled the -1 case "start"
+
+            EnsureIndexInRange(index);
+            n = GetNodeAt(index - 1);
+            n.Next = n.Next!.Next;
+            
         }
 
         public void Swap(int indexA, int indexB)
