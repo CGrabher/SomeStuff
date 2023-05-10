@@ -53,7 +53,6 @@ namespace ArrayList
         public bool Contains(T item)
         {
             var n = _start;
-
             if (item == null)
             {
                 throw new ArgumentNullException(nameof(item));
@@ -102,7 +101,6 @@ namespace ArrayList
         public T GetElementAt(int index)
         {
             EnsureIndexInRange(index);
-
             var node = GetNodeAt(index);
             return node.Value;
         }

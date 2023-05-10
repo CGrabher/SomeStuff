@@ -67,7 +67,7 @@ namespace ArrayListTests
         public void Index_Get_ReturnsRightValues(int index, int element)
         {
             // ARRANGE 
-            var testList = GetTestList(4);
+            var testList = GetTestList(5);
 
             // ACT & ASSERT should return them in the same order
             Assert.That(testList[index], Is.EqualTo(element));
@@ -79,7 +79,7 @@ namespace ArrayListTests
         public void Index_Set_SetsRightValues(int index)
         {
             // ARRANGE 
-            var testList = GetTestList(4);
+            var testList = GetTestList(5);
 
             testList[index] = 42;
 
@@ -91,7 +91,7 @@ namespace ArrayListTests
         public void ItShouldRemoveElementAtTheGivenIndex()
         {
             //ARRANGE 
-            var testList = GetTestList(4);
+            var testList = GetTestList(5);
 
             //ACT 
             testList.RemoveAt(3);
@@ -142,7 +142,7 @@ namespace ArrayListTests
         public void Clear_ShouldGiveAnEmptyArrayBack()
         {
             //ARRANGE 
-            var testList = GetTestList(4);
+            var testList = GetTestList(5);
 
             //ACT 
             testList.Clear();
@@ -155,13 +155,13 @@ namespace ArrayListTests
         public void Insert_ShouldGiveBackAnArrayWithTheInsertedElementWithin()
         {
             //ARRANGE 
-            var testList = GetTestList(4);
+            var testList = GetTestList(5);
 
             //ACT 
             testList.Insert(2, 9);
 
             //ASSERT the array Length should be increased by 1;
-            Assert.That(testList.Count, Is.EqualTo(5));
+            Assert.That(testList.Count, Is.EqualTo(6));
             Assert.That(testList[2], Is.EqualTo(9));
         }
 
@@ -179,7 +179,7 @@ namespace ArrayListTests
         public void Insert_ShouldGetAnArrayWithTheInsertedElementAtTheCorrectPosition()
         {
             //ARRANGE 
-            var testList = GetTestList(4);
+            var testList = GetTestList(5);
 
             //ACT 
             testList.Insert(2, 9);
@@ -192,32 +192,31 @@ namespace ArrayListTests
         public void Remove_ShouldRemoveTheCorrectElement()
         {
             //ARRANGE 
-            var testList = GetTestList(4);
+            var testList = GetTestList(5);
             //0 1 2 3
             //ACT 
             testList.Remove(3);
 
             //ASSERT the testList should be decrased by 1;
-            Assert.That(testList.Count, Is.EqualTo(3));
+            Assert.That(testList.Count, Is.EqualTo(4));
         }
-
 
         [TestCase(0)]
         [TestCase(3)]
         public void RemoveAt_ShouldRemoveTheCorrectElement(int index)
         {
             //ARRANGE
-            var testList = GetTestList(4);
-            //ACT
+            var testList = GetTestList(5);
+            //ACT & ASSERT
             testList.RemoveAt(index);
-            //ASSERT
+            
         }
 
         [Test]
         public void Swap_TwoElementsShouldSwapTheCorrectElements()
         {
             //ARRANGE 
-            var testList = GetTestList(4);
+            var testList = GetTestList(5);
 
             //ACT 
             testList.Swap(0, 1);
@@ -242,14 +241,14 @@ namespace ArrayListTests
 
             //ACT & ASSERT
             Assert.Throws<ArgumentOutOfRangeException>(() => testList.Swap(indexA, indexB));
-            // Throw Exception when an index less than 0 is passed.
+            //Throw Exception when an index less than 0 is passed.
         }
 
         [TestCase(0)]
         [TestCase(4)]
         [TestCase(3)]
 
-        public void GetNode_ShouldGiveTheCorrectNode(int index)
+        public void GetNodeAt_ShouldGiveTheCorrectNode(int index)
         {
             var testList = GetTestList(5);
 
@@ -258,7 +257,7 @@ namespace ArrayListTests
 
         [TestCase(-1)]
         [TestCase(6)]
-        public void GetNode_ShouldThrowException(int index)
+        public void GetNodeAt_ShouldThrowException(int index)
         {
             //ARRANGE
             var testList = GetTestList(5);
@@ -266,5 +265,66 @@ namespace ArrayListTests
             //ACT & ASSERT
             Assert.Throws<ArgumentOutOfRangeException>(() => testList.GetElementAt(index));
         }
+
+        [TestCase(0)]
+        [TestCase(4)]
+        public void ToString_ShouldGiveBackAString(int index)
+        {
+            //ARRANGE
+            var testList = GetTestList(5);
+
+            //ACT
+            var result = testList[index].ToString();
+
+            //ASSERT
+            Assert.IsInstanceOf(typeof(string), result);
+        }
+
+        [TestCase(-1)]
+        [TestCase(6)]
+        public void ToString_ShouldThrowException(int index)
+        {
+            //ARRANGE
+            var testList = GetTestList(5);
+
+            //ACT & ASSERT
+            Assert.Throws<ArgumentOutOfRangeException>(() => testList[index].ToString());
+        }
+
+        [Test]
+        public void Count_ShouldWork()
+        {
+            //ARRANGE
+            var testList = GetTestList(5);
+
+            //ACT
+            var testCount = testList.Count();
+
+            //ASSERT
+            Assert.That(testCount, Is.EqualTo(5));
+        }
+
+        [TestCase(0)]
+        [TestCase(4)]
+        public void Get_ShouldWork(int index)
+        {
+            //ARRANGE
+            var testList = GetTestList(5);
+
+            //ACT & ASSERT
+            testList.Get(index);
+        }
+
+        [TestCase(-1)]
+        [TestCase(6)]
+        public void Get_ShouldThrowException(int index)
+        {
+            //ARRANGE
+            var testList = GetTestList(5);
+
+            //ACT & ASSERT
+            Assert.Throws<ArgumentOutOfRangeException>(() => testList.Get(index));
+        }
+
     }
 }
