@@ -9,7 +9,6 @@ namespace Examples
 {
     internal class Fibonacci_Recursive
     {
-
         public ulong Fibonacci_sequence_recursive(ulong num)
         {
             if (num <= 2) return 1;
@@ -37,7 +36,7 @@ namespace Examples
 
 
             if (fibNums.ContainsKey(num))
-            {   fibNums.Remove(num - 2);
+            {   fibNums.Remove(num - 2); //Optional  -  removes all nums i used and dont need anymore
                 return fibNums[num];
             }
             try
@@ -60,7 +59,6 @@ namespace Examples
                 throw new OverflowException("Overflow at num: " + (num));
             }
         }
-
 
         //quicky
         //public ulong Fibonacci_Memo_sequence_recursive(ulong num, Dictionary<ulong, ulong>? fibNums = null)
