@@ -33,19 +33,24 @@ namespace Examples
 
         private ulong Fibonacci_Memo_sequence_recursive(ulong num, Dictionary<ulong, ulong> fibNums)
         {           
-            //num = 10
             if (num <= 2) return 1;
 
+
             if (fibNums.ContainsKey(num))
-            {
+            {   fibNums.Remove(num - 2);
                 return fibNums[num];
             }
             try
             {
                 checked
                 {
-                    //                              9                                           10
-                    ulong fibNum = Fibonacci_Memo_sequence_recursive(num - 1, fibNums) + Fibonacci_Memo_sequence_recursive(num - 2, fibNums);
+                    //ulong fibNum = Fibonacci_Memo_sequence_recursive(num - 1, fibNums) + Fibonacci_Memo_sequence_recursive(num - 2, fibNums);
+                    //fibNums[num] = fibNum;
+                    //return fibNum;
+
+                    ulong prevFib = Fibonacci_Memo_sequence_recursive(num - 1, fibNums);
+                    ulong prevPrevFib = Fibonacci_Memo_sequence_recursive(num - 2, fibNums);
+                    ulong fibNum = prevFib + prevPrevFib;
                     fibNums[num] = fibNum;
                     return fibNum;
                 }

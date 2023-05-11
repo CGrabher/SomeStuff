@@ -23,7 +23,7 @@ namespace Fakultät
             Fibonacci_Recursive f = new Fibonacci_Recursive();
 
             Console.WriteLine("**********************Without Memo**********************");
-            ulong n = 47;
+            ulong n = 43;
             var watchOne = new Stopwatch();
             watchOne.Start();
             for (ulong i = 1; i <= n; i++)
@@ -40,7 +40,7 @@ namespace Fakultät
             Console.ResetColor();
 
             Console.WriteLine("\n**********************With Memo**********************");
-            ulong c = 47;
+            ulong c = 43;
             var watchOneX = new Stopwatch();
             watchOneX.Start();
             for (ulong i = 1; i <= c; i++)
@@ -63,7 +63,7 @@ namespace Fakultät
             Console.WriteLine($"---> The Code with Meomization was {formattedNumber} % faster than the Code without!\n");
             Console.ResetColor();
 
-            f.Fibonacci_Memo_sequence_recursive(10);
+            //f.Fibonacci_Memo_sequence_recursive(10);
         }
     }
 }
