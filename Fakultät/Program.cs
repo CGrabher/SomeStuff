@@ -16,17 +16,17 @@ namespace Fakultät
             //Faculty_Recursive y = new Faculty_Recursive();
             //y.FacultyRecursive(15);
 
-
             //Fibonacci
             //Fibonacci z = new Fibonacci();
             //z.Fibonacci_sequence(50); //max 92
 
             Fibonacci_Recursive f = new Fibonacci_Recursive();
 
-            ulong n = 42;
+            Console.WriteLine("**********************Without Memo**********************");
+            ulong n = 47;
             var watchOne = new Stopwatch();
             watchOne.Start();
-            for (ulong i = 0; i <= n; i++)
+            for (ulong i = 1; i <= n; i++)
             {
                 var watchTwo = Stopwatch.StartNew(); // Startzeit aufzeichnen
                 ulong result = f.Fibonacci_sequence_recursive(i);
@@ -34,15 +34,16 @@ namespace Fakultät
                 Console.WriteLine($"{i} -> {result}. Elapsed Time {watchTwo.ElapsedMilliseconds} ms.");
             }
             watchOne.Stop();
-            Console.WriteLine($"Elapsed Time for the whole Calculation WIHOUT Memoization was {watchOne.Elapsed} \n");
+            double totalTimeOne = watchOne.ElapsedMilliseconds;
+            Console.ForegroundColor = ConsoleColor.Red;
 
+            Console.ResetColor();
 
-
-
-            ulong c = 42;
+            Console.WriteLine("\n**********************With Memo**********************");
+            ulong c = 47;
             var watchOneX = new Stopwatch();
             watchOneX.Start();
-            for (ulong i = 0; i <= c; i++)
+            for (ulong i = 1; i <= c; i++)
             {
                 var watchTwoX = Stopwatch.StartNew(); // Startzeit aufzeichnen
                 ulong result = f.Fibonacci_Memo_sequence_recursive(i);
@@ -50,9 +51,19 @@ namespace Fakultät
                 Console.WriteLine($"{i} -> {result}. Elapsed Time {watchTwoX.ElapsedMilliseconds} ms.");
             }
             watchOneX.Stop();
-            Console.WriteLine($"Elapsed Time for the whole Calculation WITH Memoization was {watchOneX.Elapsed} ");
+            double totalTimeTwo = watchOneX.ElapsedMilliseconds;
 
-            //f.Fibonacci_Memo_sequence_recursive(10);
+            double percentFaster = ((totalTimeOne - totalTimeTwo) / totalTimeTwo) * 100;
+            double rounded_PrecentFaster = Math.Round(percentFaster, 2);
+            string formattedNumber = rounded_PrecentFaster.ToString("#,##0.00");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\nWIHOUT MEMOIZATION: Elapsed Time for the whole Calculation was {watchOne.Elapsed} ms\n");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"WITH MEMOIZATION: Elapsed Time for the whole Calculation WITH Memoization was {watchOneX.Elapsed} ms\n ");
+            Console.WriteLine($"---> The Code with Meomization was {formattedNumber} % faster than the Code without!\n");
+            Console.ResetColor();
+
+            f.Fibonacci_Memo_sequence_recursive(10);
         }
     }
 }

@@ -9,44 +9,81 @@ namespace Examples
 {
     internal class Fibonacci_Recursive
     {
-       Dictionary<ulong, ulong> _fibNums = new Dictionary<ulong, ulong>();
+
         public ulong Fibonacci_sequence_recursive(ulong num)
         {
-            if (num == 0)
+            if (num <= 2) return 1;
+            try
             {
-                return 0;
+                checked
+                {
+                    return Fibonacci_sequence_recursive(num - 1) + Fibonacci_sequence_recursive(num - 2);
+                }
             }
-            
-            if (num == 1)
+            catch
             {
-                return 1;
+                throw new OverflowException("Overflow at num: " + (num + 1));
             }
-            return Fibonacci_sequence_recursive(num - 1) + Fibonacci_sequence_recursive(num - 2);
         }
 
         public ulong Fibonacci_Memo_sequence_recursive(ulong num)
         {
-            //num = 10
-            if (num == 0)
-            {
-                return 0;
-            }
-
-            if (num == 1)
-            {
-                return 1;
-            }
-
-            if (_fibNums.ContainsKey(num))
-            {
-                return _fibNums[num];
-            }
-            //                              9                                           10
-            ulong fibNum = Fibonacci_Memo_sequence_recursive(num - 1) + Fibonacci_Memo_sequence_recursive(num - 2);
-
-            _fibNums[num] = fibNum;
-
-            return fibNum;
+            return Fibonacci_Memo_sequence_recursive(num, new Dictionary<ulong, ulong>());
         }
+
+        private ulong Fibonacci_Memo_sequence_recursive(ulong num, Dictionary<ulong, ulong> fibNums)
+        {           
+            //num = 10
+            if (num <= 2) return 1;
+
+            if (fibNums.ContainsKey(num))
+            {
+                return fibNums[num];
+            }
+            try
+            {
+                checked
+                {
+                    //                              9                                           10
+                    ulong fibNum = Fibonacci_Memo_sequence_recursive(num - 1, fibNums) + Fibonacci_Memo_sequence_recursive(num - 2, fibNums);
+                    fibNums[num] = fibNum;
+                    return fibNum;
+                }
+            }
+            catch
+            {
+                throw new OverflowException("Overflow at num: " + (num));
+            }
+        }
+
+
+        //quicky
+        //public ulong Fibonacci_Memo_sequence_recursive(ulong num, Dictionary<ulong, ulong>? fibNums = null)
+        //{
+        //    if (fibNums == null)
+        //        fibNums = new Dictionary<ulong, ulong>();
+
+        //    //num = 10
+        //    if (num <= 2) return 1;
+
+        //    if (fibNums.ContainsKey(num))
+        //    {
+        //        return fibNums[num];
+        //    }
+        //    try
+        //    {
+        //        checked
+        //        {
+        //            //                              9                                           10
+        //            ulong fibNum = Fibonacci_Memo_sequence_recursive(num - 1, fibNums) + Fibonacci_Memo_sequence_recursive(num - 2, fibNums);
+        //            fibNums[num] = fibNum;
+        //            return fibNum;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        throw new OverflowException("Overflow at num: " + (num));
+        //    }
+        //}
     }
 }
