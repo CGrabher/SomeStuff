@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fakultät
+namespace Examples
 {
-    internal class Faculty_Recursive
+    internal class Faculty_Loop
     {
-        public ulong FacultyRecursive(ulong num)
+        public ulong FacultyLoop(ulong num)
         {
             if (num == 0)
             {
@@ -20,7 +19,11 @@ namespace Fakultät
             {
                 checked
                 {
-                    return num * FacultyRecursive(num - 1);
+                    for (ulong i = num - 1; i > 0; i--)
+                    {                       
+                        num *= i;
+                    }
+                    return num;
                 }
             }
             catch (OverflowException)
