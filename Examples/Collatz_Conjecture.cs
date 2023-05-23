@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Examples
 {
-    internal class Collatz_Conjecture
+    public class Collatz_Conjecture
     {
-        public List<int>CollatzSequence(int num) 
+        public List<int> CollatzSequence(int num)
         {
             return ComputeCollatzSequence(num, new List<int>());
         }
@@ -24,7 +24,15 @@ namespace Examples
                 }
                 else
                 {
-                    n = 3 * n + 1;
+                    try
+                    {
+                        checked
+                        { n = 3 * n + 1; }
+                    }
+                    catch 
+                    {
+                        throw new OverflowException("Overflow at num: " + n);
+                    }
                 }
             }
             sequence.Add(1);
