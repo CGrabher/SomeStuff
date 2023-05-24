@@ -35,6 +35,7 @@ namespace TicTacToeLibary
                 Console.Clear();
                 DrawBoard();
 
+                //TODO - if player or AI 
                 int choice = GetPlayerChoice();
 
                 if (IsValidMove(choice))
@@ -110,8 +111,9 @@ namespace TicTacToeLibary
 
         private bool IsValidMove(int choice)
         {
-            int row = (choice - 1) / 3;
-            int col = (choice - 1) % 3;
+            int input = choice - 1;
+            int row = input / 3;
+            int col = input % 3;
 
             if (choice < 1 || choice > 9)
                 return false;
@@ -178,7 +180,6 @@ namespace TicTacToeLibary
         // Get -1 if it not clear at the moment
         public static (int, int) MiniMax()
         {
-
             return (0, 0);
         }
     }

@@ -1,0 +1,77 @@
+﻿<Window
+    x:Class="SudokuWPF.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SudokuWPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Sudoku Solver"
+    Width="700"
+    Height="700"
+    MinWidth="600"
+    MinHeight="600"
+    Icon="C:\Users\Clemens Grabher\OneDrive\Liebherr\DISC\Sudoku_Favicon.jpg"
+    ResizeMode="CanResizeWithGrip"
+    mc:Ignorable="d">
+
+
+    <Grid x:Name="mainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                x:Name="txtBoxClear"
+                Grid.Column="0"
+                Margin="15,5,15,5"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Background="LightGray"
+                BorderBrush="DarkGray"
+                BorderThickness="2"
+                FontSize="25"
+                Text="Clear" />
+
+            <TextBox
+                x:Name="txtBoxSample"
+                Grid.Column="1"
+                Margin="15,5,15,5"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Background="LightGray"
+                BorderBrush="DarkGray"
+                BorderThickness="2"
+                FontSize="25"
+                Text="Sample" />
+
+            <TextBox
+                x:Name="txtBoxSolve"
+                Grid.Column="2"
+                Margin="15,5,15,5"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Background="LightGray"
+                BorderBrush="DarkGray"
+                BorderThickness="2"
+                FontSize="25"
+                Text="Solve" />
+        </Grid>
+
+        <UniformGrid
+            x:Name="uniformGrid"
+            Grid.Row="1"
+            Background="LightSteelBlue" />
+    </Grid>
+
+
+
+
+</Window>
