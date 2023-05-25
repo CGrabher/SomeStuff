@@ -123,7 +123,9 @@ namespace SudokuWPF
                             var textBoxName = $"txtBox{i}{j}";
                             var textBox = (TextBox)this.FindName(textBoxName);
                             var txtBoxNum = puzzle.GetSpotValue(i, j);
+                            textBox.Foreground = Brushes.Green;
                             textBox.Text = txtBoxNum.ToString();
+                           
                         }
                     }
                     
