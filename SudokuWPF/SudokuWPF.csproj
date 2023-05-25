@@ -7,4 +7,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SudokuLibary\SudokuLibary.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -24,8 +24,32 @@
                 string errorMessage = $"The number {value} you set at position Row: {x} Column: {y}  do not match the sudoku rules";
                 throw new Exception(errorMessage);
             }
-
             _puzzle[x, y] = value;
+        }
+ 
+        public bool TrySolve()
+        {
+            var (x, y) = FindNextEmptyField();
+
+            if (x == -1 && y == -1)
+                return true;
+
+            for (int num = 1; num <= 9; num++)
+            {
+                if (CheckIfValueIsValid(_puzzle, x, y, num))
+                {
+                    // set num at acutual position
+                    SetSpotValue(x, y, num);
+
+                    if (TrySolve())
+                        return true;
+
+                    // if the solution not works, try again
+                    ResetSpotValue(x, y); //YEEEEESSS!!!!!!!
+                }
+            }
+            //if no valid solution was found
+            return false;
         }
 
         private void ResetSpotValue(int x, int y)
@@ -86,29 +110,6 @@
             return (-1, -1);
         }
 
-        public bool TrySolve()
-        {
-            var (x, y) = FindNextEmptyField();
-
-            if (x == -1 && y == -1)
-                return true;
-
-            for (int num = 1; num <= 9; num++)
-            {
-                if (CheckIfValueIsValid(_puzzle, x, y, num))
-                {
-                    // set num at acutual position
-                    SetSpotValue(x, y, num);
-
-                    if (TrySolve())
-                        return true;
-
-                    // if the solution not works, try again
-                    ResetSpotValue(x, y); //YEEEEESSS!!!!!!!
-                }
-            }
-            //if no valid solution was found
-            return false;
-        }
+       
     }
 }

@@ -1,19 +1,16 @@
-﻿<Window
-    x:Class="SudokuWPF.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:SudokuWPF"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Sudoku Solver"
-    Width="700"
-    Height="700"
-    MinWidth="600"
-    MinHeight="600"
-    Icon="C:\Users\Clemens Grabher\OneDrive\Liebherr\DISC\Sudoku_Favicon.jpg"
-    ResizeMode="CanResizeWithGrip"
-    mc:Ignorable="d">
-
+﻿<Window x:Class="SudokuWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:SudokuWPF"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="Sudoku Solver"
+        Width="700"
+        Height="700"
+        MinWidth="600"
+        MinHeight="600"
+        Icon="C:\Users\Clemens Grabher\OneDrive\Liebherr\DISC\Sudoku_Favicon.jpg"
+        mc:Ignorable="d">
 
     <Grid x:Name="mainGrid">
         <Grid.RowDefinitions>
@@ -28,50 +25,361 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TextBox
-                x:Name="txtBoxClear"
-                Grid.Column="0"
-                Margin="15,5,15,5"
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Center"
-                Background="LightGray"
-                BorderBrush="DarkGray"
-                BorderThickness="2"
-                FontSize="25"
-                Text="Clear" />
+            <Button x:Name="txtBoxClear"
+                    Grid.Column="0"
+                    Margin="15,10,15,10"
+                    HorizontalAlignment="Stretch"
+                    Background="LightGray"
+                    BorderThickness="2"
+                    Click="BoxClear_Click"
+                    Content="Clear"
+                    Cursor="Hand"
+                    FontSize="25" />
 
-            <TextBox
-                x:Name="txtBoxSample"
-                Grid.Column="1"
-                Margin="15,5,15,5"
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Center"
-                Background="LightGray"
-                BorderBrush="DarkGray"
-                BorderThickness="2"
-                FontSize="25"
-                Text="Sample" />
+            <Button x:Name="BoxSample"
+                    Grid.Column="1"
+                    Margin="15,10,15,10"
+                    HorizontalAlignment="Stretch"
+                    Background="LightGray"
+                    BorderThickness="2"
+                    Click="Sample_Click"
+                    Content="Sample"
+                    Cursor="Hand"
+                    FontSize="25" />
 
-            <TextBox
-                x:Name="txtBoxSolve"
-                Grid.Column="2"
-                Margin="15,5,15,5"
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Center"
-                Background="LightGray"
-                BorderBrush="DarkGray"
-                BorderThickness="2"
-                FontSize="25"
-                Text="Solve" />
+            <Button x:Name="txtBoxSolve"
+                    Grid.Column="2"
+                    Margin="15,10,15,10"
+                    HorizontalAlignment="Stretch"
+                    Background="LightGray"
+                    BorderThickness="2"
+                    Click="BoxSolve_Click"
+                    Content="Solve"
+                    Cursor="Hand"
+                    FontSize="25" />
         </Grid>
 
-        <UniformGrid
-            x:Name="uniformGrid"
-            Grid.Row="1"
-            Background="LightSteelBlue" />
+        <UniformGrid Grid.Row="1"
+                     Columns="3"
+                     Rows="3">
+
+            <UniformGrid.Resources>
+                <Style TargetType="TextBox">
+                    <Setter Property="Background"
+                            Value="LightSteelBlue" />
+                    <Setter Property="BorderThickness"
+                            Value="1" />
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Center" />
+                    <Setter Property="VerticalContentAlignment"
+                            Value="Center" />
+                    <Setter Property="BorderBrush"
+                            Value="DarkGray" />
+                    <Setter Property="FontSize"
+                            Value="30" />
+                    <Setter Property="FontWeight"
+                            Value="Bold" />
+                </Style>
+            </UniformGrid.Resources>
+
+            <Border BorderBrush="Black"
+                    BorderThickness="2">
+                <UniformGrid Columns="3"
+                             Rows="3">
+                    <TextBox x:Name="txtBox00"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox10"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox20"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox01"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox11"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox21"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox02"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox12"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox22"
+                             PreviewTextInput="CellTextBox_TextInput" />
+                </UniformGrid>
+            </Border>
+
+
+            <Border BorderBrush="Black"
+                    BorderThickness="2">
+                <UniformGrid Columns="3"
+                             Rows="3">
+                    <TextBox x:Name="txtBox30"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox40"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox50"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox31"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox41"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox51"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox32"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox42"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox52"
+                             PreviewTextInput="CellTextBox_TextInput" />
+                </UniformGrid>
+            </Border>
+
+            <Border BorderBrush="Black"
+                    BorderThickness="2">
+                <UniformGrid Columns="3"
+                             Rows="3">
+                    <TextBox x:Name="txtBox60"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox70"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox80"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox61"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox71"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox81"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox62"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox72"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox82"
+                             PreviewTextInput="CellTextBox_TextInput" />
+                </UniformGrid>
+            </Border>
+
+
+            <Border BorderBrush="Black"
+                    BorderThickness="2">
+                <UniformGrid Columns="3"
+                             Rows="3">
+                    <TextBox x:Name="txtBox03"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox13"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox23"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox04"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox14"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox24"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox05"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox15"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox25"
+                             PreviewTextInput="CellTextBox_TextInput" />
+                </UniformGrid>
+            </Border>
+
+
+            <Border BorderBrush="Black"
+                    BorderThickness="2">
+                <UniformGrid Columns="3"
+                             Rows="3">
+                    <TextBox x:Name="txtBox33"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox43"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox53"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox34"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox44"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox54"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox35"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox45"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox55"
+                             PreviewTextInput="CellTextBox_TextInput" />
+                </UniformGrid>
+            </Border>
+
+            <Border BorderBrush="Black"
+                    BorderThickness="2">
+                <UniformGrid Columns="3"
+                             Rows="3">
+                    <TextBox x:Name="txtBox63"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox73"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox83" />
+
+                    <TextBox x:Name="txtBox64"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox74"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox84"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox65"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox75"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox85"
+                             PreviewTextInput="CellTextBox_TextInput" />
+                </UniformGrid>
+            </Border>
+
+            <Border BorderBrush="Black"
+                    BorderThickness="2">
+                <UniformGrid Columns="3"
+                             Rows="3">
+                    <TextBox x:Name="txtBox06"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox16"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox26"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox07"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox17"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox27"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox08"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox18"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox28"
+                             PreviewTextInput="CellTextBox_TextInput" />
+                </UniformGrid>
+            </Border>
+
+            <Border BorderBrush="Black"
+                    BorderThickness="2">
+                <UniformGrid Columns="3"
+                             Rows="3">
+                    <TextBox x:Name="txtBox36"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox46"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox56"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox37"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox47"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox57"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox38"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox48"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox58"
+                             PreviewTextInput="CellTextBox_TextInput" />
+                </UniformGrid>
+            </Border>
+
+            <Border BorderBrush="Black"
+                    BorderThickness="2">
+                <UniformGrid Columns="3"
+                             Rows="3">
+                    <TextBox x:Name="txtBox66"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox76"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox86"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox67"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox77"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox87"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox68"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox78"
+                             PreviewTextInput="CellTextBox_TextInput" />
+
+                    <TextBox x:Name="txtBox88"
+                             PreviewTextInput="CellTextBox_TextInput" />
+                </UniformGrid>
+            </Border>
+        </UniformGrid>
     </Grid>
-
-
-
-
 </Window>
