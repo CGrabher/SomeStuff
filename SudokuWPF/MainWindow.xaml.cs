@@ -23,17 +23,21 @@ namespace SudokuWPF
 {
     public partial class MainWindow : Window
     {
-
         private List<TextBox> _textBoxes;
+        
+
+        
 
         public MainWindow()
         {
             InitializeComponent();
+            SudokuPuzzle.OnErrorOccured += ShowErrorPopup;
+            this.LocationChanged += MainWindow_LocationChanged;
 
             _textBoxes = new List<TextBox>
             {
                 txtBox00,txtBox10,txtBox20,txtBox30,txtBox40,txtBox50,txtBox60,txtBox70,txtBox80,
-                
+
                 txtBox01,txtBox11,txtBox21,txtBox31,txtBox41,txtBox51,txtBox61,txtBox71,txtBox81,
 
                 txtBox02,txtBox12,txtBox22,txtBox32,txtBox42,txtBox52,txtBox62,txtBox72,txtBox82,
@@ -50,33 +54,42 @@ namespace SudokuWPF
 
                 txtBox08,txtBox18,txtBox28,txtBox38,txtBox48,txtBox58,txtBox68,txtBox78,txtBox88,
             };
-
-
-
         }
         private void CellTextBox_TextInput(object sender, TextCompositionEventArgs e)
         {
-            e.Handled = !IsTextAllowed(e.Text);
+            //e.Handled = !IsTextAllowed(e.Text);
+            //ChangeTextColor(sender);
 
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                textBox.Clear();
+                e.Handled = !IsTextAllowed(e.Text);
+            }
             ChangeTextColor(sender);
         }
         private static bool IsTextAllowed(string text)
         {
+            //txtBox00.Text = puzzle.GetSpotValue(0, 0).ToString();
             int result;
-            return Int32.TryParse(text, out result) && result >= 1 && result <= 9;
+            return text.Length == 1 && Int32.TryParse(text, out result) && result >= 1 && result <= 9;
         }
 
         private void ChangeTextColor(object sender)
         {
-            TextBox? tb = sender as TextBox;
+            SolidColorBrush myBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D5A50"));
+
+            TextBox ? tb = sender as TextBox;
             if (tb != null)
             {
-                tb.Foreground = Brushes.Blue;
+                tb.Foreground = myBrush;
             }
         }
 
         private void BoxClear_Click(object sender, RoutedEventArgs e)
         {
+            SolidColorBrush myBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFBE9"));
+            _myPopup.IsOpen = false;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
@@ -86,19 +99,20 @@ namespace SudokuWPF
                     if (textBox != null)
                     {
                         textBox.Text = string.Empty;
+                        textBox.Background = myBrush;
                     }
                 }
             }
         }
         private void Sample_Click(object sender, RoutedEventArgs e)
         {
+            BoxClear_Click(sender,e);
             FillSudoku();
         }
 
         private void BoxSolve_Click(object sender, RoutedEventArgs e)
         {
             var puzzle = new SudokuPuzzle();
-
             foreach (var tb in _textBoxes)
             {
                 var x = int.Parse(tb.Name.Substring(6, 1));
@@ -106,44 +120,72 @@ namespace SudokuWPF
 
                 if (int.TryParse(tb.Text, out var num))
                     puzzle.SetSpotValue(x, y, num);
-
             }
 
             if (puzzle.TrySolve())
             {
+                SolidColorBrush myCol = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEE3CB"));
 
-                if (string.IsNullOrWhiteSpace(txtBox00.Text))
+                SolidColorBrush myCol2 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D5A50"));
+
+                //txtBox00.Text = puzzle.GetSpotValue(0, 0).ToString();
+                for (int i = 0; i < 9; i++)
                 {
-                    //txtBox00.Text = puzzle.GetSpotValue(0, 0).ToString();
-
-                    for (int i = 0; i < 9; i++)
+                    for (int j = 0; j < 9; j++)
                     {
-                        for (int j = 0; j < 9; j++)
+                        var textBoxName = $"txtBox{i}{j}";
+                        var textBox = (TextBox)this.FindName(textBoxName);
+                        textBox.Foreground = Brushes.Black;
+
+                        if (string.IsNullOrWhiteSpace(textBox.Text))
                         {
-                            var textBoxName = $"txtBox{i}{j}";
-                            var textBox = (TextBox)this.FindName(textBoxName);
                             var txtBoxNum = puzzle.GetSpotValue(i, j);
-                            textBox.Foreground = Brushes.Green;
+                            textBox.Background = myCol;
+                            textBox.Foreground = myCol2;
                             textBox.Text = txtBoxNum.ToString();
-                           
                         }
                     }
-                    
-
                 }
-                else
-                {
-
-                }
+            }
+            else
+            {
+                //TODO - CANT Solve
 
             }
+        }
+        private void ShowErrorPopup(string errorMessage)
+        {
+            // Wenn das Popup offen ist, schließen Sie es zuerst
+            if (_myPopup.IsOpen)
+            {
+                _myPopup.IsOpen = false;
+            }
+
+            // Setzen Sie Ihre Popup-Nachricht (Sie müssen eine entsprechende Eigenschaft in Ihrem Popup hinzufügen)
+            // myPopup.Message = errorMessage;
+
+            // Öffnen Sie das Popup
+            _myPopup.IsOpen = true;
         }
 
         private void CellTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
 
         }
+        private void MainWindow_LocationChanged(object sender, EventArgs e)
+        {
+            // Erzwingt die Aktualisierung der Position des Popups
+            var offset = _myPopup.HorizontalOffset;
+            _myPopup.HorizontalOffset = offset + 1;
+            _myPopup.HorizontalOffset = offset;
+        }
 
+        private void ClosePopupButton_Click(object sender, RoutedEventArgs e)
+        { 
+            _myPopup.IsOpen = false;
+        }
+
+  
         private void FillSudoku()
         {
             //ROW 1

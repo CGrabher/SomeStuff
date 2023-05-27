@@ -9,8 +9,18 @@
         Height="700"
         MinWidth="600"
         MinHeight="600"
-        Icon="C:\Users\Clemens Grabher\OneDrive\Liebherr\DISC\Sudoku_Favicon.jpg"
+        Background="#AD8B73"
+        Icon="C:\Users\cleme\OneDrive\Lbsfe\VS\DISC\Sudoku_Favicon.jpg"
         mc:Ignorable="d">
+
+    <!--Colors
+        #025464 - Green
+        #E57C23 - Orange
+        #E8AA42 - Yellow
+        #F8F1F1 - White
+    
+    
+    -->
 
     <Grid x:Name="mainGrid">
         <Grid.RowDefinitions>
@@ -25,48 +35,155 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
+
             <Button x:Name="txtBoxClear"
                     Grid.Column="0"
-                    Margin="15,10,15,10"
+                    Margin="45,30,15,10"
                     HorizontalAlignment="Stretch"
-                    Background="LightGray"
+                    Background="#FFFBE9"
                     BorderThickness="2"
                     Click="BoxClear_Click"
+                    BorderBrush="Black"
                     Content="Clear"
                     Cursor="Hand"
-                    FontSize="25" />
+                    FontSize="25"
+                    FontWeight="Bold">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="2"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#EEE3CB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+
+            </Button>
 
             <Button x:Name="BoxSample"
                     Grid.Column="1"
-                    Margin="15,10,15,10"
+                    Margin="30,30,30,10"
                     HorizontalAlignment="Stretch"
-                    Background="LightGray"
+                    Background="#FFFBE9"
                     BorderThickness="2"
                     Click="Sample_Click"
+                    BorderBrush="Black"
                     Content="Sample"
                     Cursor="Hand"
-                    FontSize="25" />
+                    FontSize="25"
+                    FontWeight="Bold">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="2"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#EEE3CB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
 
             <Button x:Name="txtBoxSolve"
                     Grid.Column="2"
-                    Margin="15,10,15,10"
+                    Margin="15,30,45,10"
                     HorizontalAlignment="Stretch"
-                    Background="LightGray"
+                    Background="#FFFBE9"
                     BorderThickness="2"
                     Click="BoxSolve_Click"
+                    BorderBrush="Black"
                     Content="Solve"
                     Cursor="Hand"
-                    FontSize="25" />
+                    FontSize="25"
+                    FontWeight="Bold">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="2"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#EEE3CB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Grid>
+
+        <Popup x:Name="_myPopup"
+               IsOpen="False"
+               AllowsTransparency="True"
+               PlacementTarget="{Binding ElementName=mainWindow}"
+               Placement="Center">
+            <Border Background="#FFFBE9"
+                    Width="auto"
+                    Height="auto"
+                    CornerRadius="10"
+                    BorderBrush="Black"
+                    BorderThickness="5"
+                    Margin="10,10,10,10">
+                <Grid>
+                    <TextBlock Text="The table does not comply&#x0a;        the sudoku rules"
+                               FontSize="40"
+                               FontWeight="Bold"
+                               Foreground="Red"
+                               Margin="15,15,15,15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+
+                    <Button Content="X"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Margin="0,0,5,0"
+                            FontWeight="Bold"
+                            FontSize="17"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Foreground="Black"
+                            Click="ClosePopupButton_Click" />
+                </Grid>
+            </Border>
+        </Popup>
 
         <UniformGrid Grid.Row="1"
                      Columns="3"
-                     Rows="3">
+                     Rows="3"
+                     Margin="45,45,45,45">
 
             <UniformGrid.Resources>
                 <Style TargetType="TextBox">
                     <Setter Property="Background"
-                            Value="LightSteelBlue" />
+                            Value="#FFFBE9" />
                     <Setter Property="BorderThickness"
                             Value="1" />
                     <Setter Property="HorizontalContentAlignment"
@@ -74,11 +191,13 @@
                     <Setter Property="VerticalContentAlignment"
                             Value="Center" />
                     <Setter Property="BorderBrush"
-                            Value="DarkGray" />
+                            Value="#AD8B73" />
                     <Setter Property="FontSize"
                             Value="30" />
                     <Setter Property="FontWeight"
                             Value="Bold" />
+                    <Setter Property="SelectionBrush"
+                            Value="Black" />
                 </Style>
             </UniformGrid.Resources>
 
@@ -382,4 +501,5 @@
             </Border>
         </UniformGrid>
     </Grid>
+
 </Window>

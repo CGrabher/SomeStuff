@@ -3,6 +3,7 @@
     public class SudokuPuzzle
     {
         private readonly int[,] _puzzle;
+        public static event Action<string> OnErrorOccured = delegate { };
 
         public SudokuPuzzle()
         {
@@ -16,16 +17,27 @@
 
         public void SetSpotValue(int x, int y, int value)
         {
-            if (value < 1 || value > 9)
-                throw new ArgumentOutOfRangeException(nameof(value));
-
-            if (!CheckIfValueIsValid(_puzzle, x, y, value))
+            try
             {
-                string errorMessage = $"The number {value} you set at position Row: {x} Column: {y}  do not match the sudoku rules";
-                throw new Exception(errorMessage);
+                if (value < 1 || value > 9)
+                    throw new ArgumentOutOfRangeException(nameof(value));
+
+                if (!CheckIfValueIsValid(_puzzle, x, y, value))
+                {
+                    string errorMessage = $"The number {value} you set at position Row: {x} Column: {y}  do not match the sudoku rules";
+                    throw new Exception(errorMessage);
+                }
+                _puzzle[x, y] = value;
             }
-            _puzzle[x, y] = value;
+            catch (Exception ex)
+            {
+                OnErrorOccured(ex.Message);
+                
+            }
+
+
         }
+            
  
         public bool TrySolve()
         {
