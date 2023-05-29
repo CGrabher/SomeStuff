@@ -25,8 +25,12 @@
     <Grid x:Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
+
+
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -175,10 +179,15 @@
             </Border>
         </Popup>
 
-        <UniformGrid Grid.Row="1"
+        <Label x:Name="CountLabel"
+               Grid.Row="1"></Label>
+
+        <UniformGrid Grid.Row="2"
                      Columns="3"
                      Rows="3"
                      Margin="45,45,45,45">
+
+            
 
             <UniformGrid.Resources>
                 <Style TargetType="TextBox">
