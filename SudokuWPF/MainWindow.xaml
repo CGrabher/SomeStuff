@@ -75,7 +75,7 @@
 
             </Button>
 
-            <Button x:Name="BoxSample"
+            <Button x:Name="txtBoxSample"
                     Grid.Column="1"
                     Margin="30,30,30,10"
                     HorizontalAlignment="Stretch"
@@ -179,7 +179,7 @@
             </Border>
         </Popup>
 
-        <Label x:Name="CountLabel"
+        <Label x:Name="GameInfoLabel"
                Grid.Row="1"></Label>
 
         <UniformGrid Grid.Row="2"

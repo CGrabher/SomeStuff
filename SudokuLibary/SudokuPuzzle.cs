@@ -5,8 +5,6 @@
         private readonly int[,] _puzzle;
         public static event Action<string> OnErrorOccured = delegate { };
 
-        public event EventHandler<int> step;
-
         public SudokuPuzzle()
         {
             _puzzle = new int[9, 9];
@@ -36,23 +34,10 @@
                 OnErrorOccured(ex.Message);
                 
             }
-
-
         }
-
-        int counter = 0;
-
-        public int Counter { get => counter; set => counter = value; }
 
         public bool TrySolve()
         {
-            Counter = 0;
-            return InternalTrySolve();
-        }
-
-        private bool InternalTrySolve()
-        {
-            Counter++;
             var (x, y) = FindNextEmptyField();
 
             if (x == -1 && y == -1)
@@ -64,10 +49,8 @@
                 {
                     // set num at acutual position
                     SetSpotValue(x, y, num);
-                    if (Counter % 1000 == 0)
-                        this.step(this, Counter);
 
-                    if (InternalTrySolve())
+                    if (TrySolve())
                         return true;
 
                     // if the solution not works, try again

@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,9 +24,6 @@ namespace SudokuWPF
     public partial class MainWindow : Window
     {
         private List<TextBox> _textBoxes;
-        
-
-        
 
         public MainWindow()
         {
@@ -80,7 +76,7 @@ namespace SudokuWPF
         {
             SolidColorBrush myBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D5A50"));
 
-            TextBox ? tb = sender as TextBox;
+            TextBox? tb = sender as TextBox;
             if (tb != null)
             {
                 tb.Foreground = myBrush;
@@ -107,14 +103,34 @@ namespace SudokuWPF
         }
         private async void Sample_Click(object sender, RoutedEventArgs e)
         {
-            BoxClear_Click(sender,e);
+            BoxClear_Click(sender, e);
             FillSudoku();
         }
 
-
-
         private async void BoxSolve_Click(object sender, RoutedEventArgs e)
         {
+
+            SolidColorBrush myGrayButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFAD8B73"));
+
+            SolidColorBrush semiTransparentBlack = new SolidColorBrush(Colors.Black) { Opacity = 0.4 };
+
+            txtBoxClear.IsEnabled = false;
+            txtBoxClear.Background = myGrayButtonBackground;
+            txtBoxClear.Foreground = semiTransparentBlack;
+            txtBoxClear.BorderBrush = semiTransparentBlack;
+
+            txtBoxSample.IsEnabled = false;
+            txtBoxSample.Background = myGrayButtonBackground;
+            txtBoxSample.Foreground = semiTransparentBlack;
+            txtBoxSample.BorderBrush = semiTransparentBlack;
+
+            txtBoxSolve.IsEnabled = false;
+            txtBoxSolve.Background = myGrayButtonBackground;
+            txtBoxSolve.Foreground = semiTransparentBlack;
+            txtBoxSolve.BorderBrush = semiTransparentBlack;
+
+
+
             var puzzle = new SudokuPuzzle();
             foreach (var tb in _textBoxes)
             {
@@ -124,79 +140,61 @@ namespace SudokuWPF
                 if (int.TryParse(tb.Text, out var num))
                     puzzle.SetSpotValue(x, y, num);
             }
-            var uiThread = Application.Current.Dispatcher;
 
-            // this is called everytime the step-event is thrown
-            puzzle.step += (sender, counter) =>
+            //creates a new Thread for my TrySOlve
+            var async = await Task.Run(() => puzzle.TrySolve());
+            if (async)
+            if  (puzzle.TrySolve())
             {
+                SolidColorBrush myCol = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEE3CB"));
 
-                uiThread.Invoke(() =>
+                SolidColorBrush myCol2 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D5A50"));
+
+                //txtBox00.Text = puzzle.GetSpotValue(0, 0).ToString();
+                for (int i = 0; i < 9; i++)
                 {
-                    UpdateTextboxes(puzzle, counter);
-                });
-            };
-
-
-            // before we start, we update the background/foreground of the textboxes once
-
-            SolidColorBrush myCol = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEE3CB"));
-            SolidColorBrush myCol2 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D5A50"));
-
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    var textBoxName = $"txtBox{i}{j}";
-                    var textBox = (TextBox)this.FindName(textBoxName);
-                    textBox.Foreground = Brushes.Black;
-
-                    // if there is a value, it means that this is from the sample
-                    if (string.IsNullOrWhiteSpace(textBox.Text))
+                    for (int j = 0; j < 9; j++)
                     {
-                        textBox.Background = myCol;
-                        textBox.Foreground = myCol2;
+                        var textBoxName = $"txtBox{i}{j}";
+                        var textBox = (TextBox)this.FindName(textBoxName);
+                        textBox.Foreground = Brushes.Black;
+
+                        if (string.IsNullOrWhiteSpace(textBox.Text))
+                        {
+                            var txtBoxNum = puzzle.GetSpotValue(i, j);
+                            textBox.Background = myCol;
+                            textBox.Foreground = myCol2;
+                            textBox.Text = txtBoxNum.ToString();
+                        }
                     }
                 }
-            }
-
-
-            var result = await Task.Run(() => puzzle.TrySolve());
-               
-            if (result)
-            {
-                UpdateTextboxes(puzzle, puzzle.Counter);    
             }
             else
             {
                 //TODO - CANT Solve
 
             }
+
+            SolidColorBrush myButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFBE9"));
+            SolidColorBrush foregroundBlack = new SolidColorBrush(Colors.Black);
+
+
+            txtBoxClear.IsEnabled = true;
+            txtBoxClear.Background = myButtonBackground;
+            txtBoxClear.Foreground = foregroundBlack;
+            txtBoxClear.BorderBrush = foregroundBlack;
+
+            txtBoxSample.IsEnabled = true;
+            txtBoxSample.Background = myButtonBackground;
+            txtBoxSample.Foreground = foregroundBlack;
+            txtBoxSample.BorderBrush = foregroundBlack;
+
+            txtBoxSolve.IsEnabled = true;
+            txtBoxSolve.Background = myButtonBackground;
+            txtBoxSolve.Foreground = foregroundBlack;
+            txtBoxSolve.BorderBrush = foregroundBlack;
+
         }
-
-        private void UpdateTextboxes(SudokuPuzzle puzzle, int count)
-        {
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    var textBoxName = $"txtBox{i}{j}";
-                    var textBox = (TextBox)this.FindName(textBoxName);
-                    var txtBoxNum = puzzle.GetSpotValue(i, j);
-                    if (txtBoxNum != 0)
-                    {
-                        textBox.Text = txtBoxNum.ToString();
-                    }
-                }
-            }
-
-            this.CountLabel.Content = count;
-        }
-
-        private void Puzzle_step(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void ShowErrorPopup(string errorMessage)
         {
             // Wenn das Popup offen ist, schließen Sie es zuerst
@@ -212,10 +210,6 @@ namespace SudokuWPF
             _myPopup.IsOpen = true;
         }
 
-        private void CellTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-
-        }
         private void MainWindow_LocationChanged(object sender, EventArgs e)
         {
             // Erzwingt die Aktualisierung der Position des Popups
@@ -225,11 +219,11 @@ namespace SudokuWPF
         }
 
         private void ClosePopupButton_Click(object sender, RoutedEventArgs e)
-        { 
+        {
             _myPopup.IsOpen = false;
         }
 
-  
+
         private void FillSudoku()
         {
             //ROW 1
