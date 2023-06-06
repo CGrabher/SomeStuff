@@ -167,6 +167,8 @@ namespace SudokuWPF
                     //creates a new Thread for my TrySOlve
                     var async = await Task.Run(() => puzzle.TrySolve());
                     if (async)
+                    {
+
                         if (puzzle.TrySolve())
                         {
                             SolidColorBrush myCol = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEE3CB"));
@@ -194,11 +196,16 @@ namespace SudokuWPF
                             //Simulates slow code 
                             //var slowCode = await Task.Run(() => Thread.Sleep(5000));
                         }
-                        else
-                        {
-                            _myPopupTextblock.Text = "Sorry mate!\n        I Can´t solve the sudoku";
-                        }
+                    }
+                    else
+                    {
+                        string errMsg = "          Sorry mate!\nI can´t solve the sudoku";
+                        
+                        ShowErrorPopup(errMsg);
+                    }
+
                 }
+                
             }
             SolidColorBrush myBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFBE9"));
 
@@ -231,7 +238,8 @@ namespace SudokuWPF
             }
             _myPopup.IsOpen = true;
             _cantSolve = true;
-            _myPopupTextblock.Text = "The table does not comply \n        the sudoku rules";
+            _myPopupTextblock.Text = errorMessage;
+            //_myPopupTextblock.Text = "The table does not comply \n        the sudoku rules";
 
 
         }

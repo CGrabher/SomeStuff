@@ -24,7 +24,8 @@
 
                 if (!CheckIfValueIsValid(_puzzle, x, y, value))
                 {
-                    string errorMessage = $"The number {value} you set at position Row: {x} Column: {y}  do not match the sudoku rules";
+                    //string errorMessage = $"The number {value} you set at position Row: {x} Column: {y}  do not match the sudoku rules";
+                    string errorMessage = "The table does not comply \n        the sudoku rules";
                     
                     throw new Exception(errorMessage);
                 }
