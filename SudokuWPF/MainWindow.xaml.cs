@@ -27,7 +27,7 @@ namespace SudokuWPF
     {
         private List<TextBox> _textBoxes;
 
-        private bool _cantSolve = false;
+        private bool _canSolve = true;
 
         public MainWindow()
         {
@@ -93,7 +93,7 @@ namespace SudokuWPF
             SolidColorBrush foregroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000"));
 
             _myPopup.IsOpen = false;
-            _cantSolve = false;
+            _canSolve = true;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
@@ -119,8 +119,6 @@ namespace SudokuWPF
 
         private async void BoxSolve_Click(object sender, RoutedEventArgs e)
         {
-
-
             if (_textBoxes.Any(tb => string.IsNullOrWhiteSpace(tb.Text) || !int.TryParse(tb.Text, out var num) || num == 0))
             {
                 SolidColorBrush myGrayBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFAD8B73"));
@@ -159,47 +157,47 @@ namespace SudokuWPF
                 
 
 
-                if (_cantSolve == false)
+                if (_canSolve)
                 {
                     //Simulates slow code
-                    //await Task.Delay(TimeSpan.FromSeconds(5));
+                   // await Task.Delay(TimeSpan.FromSeconds(5));
+
+                    //var t = await Task.Run(() => { return 5; });
+
+                    //Task.Run(() => { return 42; });
 
                     //creates a new Thread for my TrySOlve
                     var async = await Task.Run(() => puzzle.TrySolve());
                     if (async)
                     {
+                        SolidColorBrush myCol = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEE3CB"));
 
-                        if (puzzle.TrySolve())
+                        SolidColorBrush myCol2 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D5A50"));
+
+                        for (int i = 0; i < 9; i++)
                         {
-                            SolidColorBrush myCol = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEE3CB"));
-
-                            SolidColorBrush myCol2 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D5A50"));
-
-                            //txtBox00.Text = puzzle.GetSpotValue(0, 0).ToString();
-                            for (int i = 0; i < 9; i++)
+                            for (int j = 0; j < 9; j++)
                             {
-                                for (int j = 0; j < 9; j++)
-                                {
-                                    var textBoxName = $"txtBox{i}{j}";
-                                    var textBox = (TextBox)this.FindName(textBoxName);
-                                    textBox.Foreground = Brushes.Black;
+                                var textBoxName = $"txtBox{i}{j}";
+                                var textBox = (TextBox)this.FindName(textBoxName);
+                                //textBox.Foreground = Brushes.Black;
 
-                                    if (string.IsNullOrWhiteSpace(textBox.Text))
-                                    {
-                                        var txtBoxNum = puzzle.GetSpotValue(i, j);
-                                        textBox.Background = myCol;
-                                        textBox.Foreground = myCol2;
-                                        textBox.Text = txtBoxNum.ToString();
-                                    }
+                                if (string.IsNullOrWhiteSpace(textBox.Text))
+                                {
+                                    var txtBoxNum = puzzle.GetSpotValue(i, j);
+                                    textBox.Background = myCol;
+                                    textBox.Foreground = myCol2;
+                                    textBox.Text = txtBoxNum.ToString();
                                 }
                             }
-                            //Simulates slow code 
-                            //var slowCode = await Task.Run(() => Thread.Sleep(5000));
                         }
+                        //Simulates slow code 
+                        //var slowCode = await Task.Run(() => Thread.Sleep(5000));
+                        
                     }
                     else
                     {
-                        string errMsg = "          Sorry mate!\nI can´t solve the sudoku";
+                        string errMsg = "          Sorry mate\nThis sudoku is unsolvable!";
                         
                         ShowErrorPopup(errMsg);
                     }
@@ -237,7 +235,7 @@ namespace SudokuWPF
                 _myPopup.IsOpen = false;
             }
             _myPopup.IsOpen = true;
-            _cantSolve = true;
+            _canSolve = false;
             _myPopupTextblock.Text = errorMessage;
             //_myPopupTextblock.Text = "The table does not comply \n        the sudoku rules";
 
