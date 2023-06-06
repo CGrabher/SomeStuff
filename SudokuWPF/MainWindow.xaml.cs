@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Printing;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +26,8 @@ namespace SudokuWPF
     public partial class MainWindow : Window
     {
         private List<TextBox> _textBoxes;
+
+        private bool _cantSolve = false;
 
         public MainWindow()
         {
@@ -85,18 +89,24 @@ namespace SudokuWPF
 
         private void BoxClear_Click(object sender, RoutedEventArgs e)
         {
-            SolidColorBrush myBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFBE9"));
+            SolidColorBrush backgroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFBE9"));
+            SolidColorBrush foregroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000"));
+
             _myPopup.IsOpen = false;
+            _cantSolve = false;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
                     var textBoxName = $"txtBox{i}{j}";
                     var textBox = (TextBox)this.FindName(textBoxName);
+                    textBox.IsReadOnly = false;
+                    textBox.IsHitTestVisible = true;
                     if (textBox != null)
                     {
                         textBox.Text = string.Empty;
-                        textBox.Background = myBrush;
+                        textBox.Background = backgroundColor;
+                        textBox.Foreground = foregroundColor;
                     }
                 }
             }
@@ -109,115 +119,125 @@ namespace SudokuWPF
 
         private async void BoxSolve_Click(object sender, RoutedEventArgs e)
         {
+
+
             if (_textBoxes.Any(tb => string.IsNullOrWhiteSpace(tb.Text) || !int.TryParse(tb.Text, out var num) || num == 0))
             {
-                SolidColorBrush myGrayButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFAD8B73"));
+                SolidColorBrush myGrayBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFAD8B73"));
 
                 SolidColorBrush semiTransparentBlack = new SolidColorBrush(Colors.Black) { Opacity = 0.4 };
 
                 txtBoxClear.IsEnabled = false;
-                txtBoxClear.Background = myGrayButtonBackground;
+                txtBoxClear.Background = myGrayBackground;
                 txtBoxClear.Foreground = semiTransparentBlack;
                 txtBoxClear.BorderBrush = semiTransparentBlack;
 
                 txtBoxSample.IsEnabled = false;
-                txtBoxSample.Background = myGrayButtonBackground;
+                txtBoxSample.Background = myGrayBackground;
                 txtBoxSample.Foreground = semiTransparentBlack;
                 txtBoxSample.BorderBrush = semiTransparentBlack;
 
                 txtBoxSolve.IsEnabled = false;
-                txtBoxSolve.Background = myGrayButtonBackground;
+                txtBoxSolve.Background = myGrayBackground;
                 txtBoxSolve.Foreground = semiTransparentBlack;
                 txtBoxSolve.BorderBrush = semiTransparentBlack;
-
 
 
                 var puzzle = new SudokuPuzzle();
                 foreach (var tb in _textBoxes)
                 {
+                    tb.IsReadOnly = true;
+
+                    tb.IsHitTestVisible = false;
+
                     var x = int.Parse(tb.Name.Substring(6, 1));
                     var y = int.Parse(tb.Name.Substring(7, 1));
 
                     if (int.TryParse(tb.Text, out var num))
                         puzzle.SetSpotValue(x, y, num);
                 }
+                
 
-                //creates a new Thread for my TrySOlve
-                var async = await Task.Run(() => puzzle.TrySolve());
-                if (async)
-                    if (puzzle.TrySolve())
-                    {
-                        SolidColorBrush myCol = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEE3CB"));
 
-                        SolidColorBrush myCol2 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D5A50"));
+                if (_cantSolve == false)
+                {
+                    //Simulates slow code
+                    //await Task.Delay(TimeSpan.FromSeconds(5));
 
-                        //txtBox00.Text = puzzle.GetSpotValue(0, 0).ToString();
-                        for (int i = 0; i < 9; i++)
+                    //creates a new Thread for my TrySOlve
+                    var async = await Task.Run(() => puzzle.TrySolve());
+                    if (async)
+                        if (puzzle.TrySolve())
                         {
-                            for (int j = 0; j < 9; j++)
-                            {
-                                var textBoxName = $"txtBox{i}{j}";
-                                var textBox = (TextBox)this.FindName(textBoxName);
-                                textBox.Foreground = Brushes.Black;
+                            SolidColorBrush myCol = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEE3CB"));
 
-                                if (string.IsNullOrWhiteSpace(textBox.Text))
+                            SolidColorBrush myCol2 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D5A50"));
+
+                            //txtBox00.Text = puzzle.GetSpotValue(0, 0).ToString();
+                            for (int i = 0; i < 9; i++)
+                            {
+                                for (int j = 0; j < 9; j++)
                                 {
-                                    var txtBoxNum = puzzle.GetSpotValue(i, j);
-                                    textBox.Background = myCol;
-                                    textBox.Foreground = myCol2;
-                                    textBox.Text = txtBoxNum.ToString();
+                                    var textBoxName = $"txtBox{i}{j}";
+                                    var textBox = (TextBox)this.FindName(textBoxName);
+                                    textBox.Foreground = Brushes.Black;
+
+                                    if (string.IsNullOrWhiteSpace(textBox.Text))
+                                    {
+                                        var txtBoxNum = puzzle.GetSpotValue(i, j);
+                                        textBox.Background = myCol;
+                                        textBox.Foreground = myCol2;
+                                        textBox.Text = txtBoxNum.ToString();
+                                    }
                                 }
                             }
+                            //Simulates slow code 
+                            //var slowCode = await Task.Run(() => Thread.Sleep(5000));
                         }
-                    }
-                    else
-                    {
-                        //TODO - CANT Solve
-
-                    }
-
-                SolidColorBrush myButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFBE9"));
-                SolidColorBrush foregroundBlack = new SolidColorBrush(Colors.Black);
-
-
-                txtBoxClear.IsEnabled = true;
-                txtBoxClear.Background = myButtonBackground;
-                txtBoxClear.Foreground = foregroundBlack;
-                txtBoxClear.BorderBrush = foregroundBlack;
-
-                txtBoxSample.IsEnabled = true;
-                txtBoxSample.Background = myButtonBackground;
-                txtBoxSample.Foreground = foregroundBlack;
-                txtBoxSample.BorderBrush = foregroundBlack;
-
-                txtBoxSolve.IsEnabled = true;
-                txtBoxSolve.Background = myButtonBackground;
-                txtBoxSolve.Foreground = foregroundBlack;
-                txtBoxSolve.BorderBrush = foregroundBlack;
-
+                        else
+                        {
+                            _myPopupTextblock.Text = "Sorry mate!\n        I Can´t solve the sudoku";
+                        }
+                }
             }
+            SolidColorBrush myBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFBE9"));
 
-            
+            SolidColorBrush foregroundBlack = new SolidColorBrush(Colors.Black);
+
+
+            txtBoxClear.IsEnabled = true;
+            txtBoxClear.Background = myBackground;
+            txtBoxClear.Foreground = foregroundBlack;
+            txtBoxClear.BorderBrush = foregroundBlack;
+
+            txtBoxSample.IsEnabled = true;
+            txtBoxSample.Background = myBackground;
+            txtBoxSample.Foreground = foregroundBlack;
+            txtBoxSample.BorderBrush = foregroundBlack;
+
+            txtBoxSolve.IsEnabled = true;
+            txtBoxSolve.Background = myBackground;
+            txtBoxSolve.Foreground = foregroundBlack;
+            txtBoxSolve.BorderBrush = foregroundBlack;
+
 
         }
         private void ShowErrorPopup(string errorMessage)
         {
-            // Wenn das Popup offen ist, schließen Sie es zuerst
+
             if (_myPopup.IsOpen)
             {
                 _myPopup.IsOpen = false;
             }
-
-            // Setzen Sie Ihre Popup-Nachricht (Sie müssen eine entsprechende Eigenschaft in Ihrem Popup hinzufügen)
-            // myPopup.Message = errorMessage;
-
-            // Öffnen Sie das Popup
             _myPopup.IsOpen = true;
-        }
+            _cantSolve = true;
+            _myPopupTextblock.Text = "The table does not comply \n        the sudoku rules";
 
+
+        }
         private void MainWindow_LocationChanged(object sender, EventArgs e)
         {
-            // Erzwingt die Aktualisierung der Position des Popups
+            // Forces the update of the position of the popup
             var offset = _myPopup.HorizontalOffset;
             _myPopup.HorizontalOffset = offset + 1;
             _myPopup.HorizontalOffset = offset;

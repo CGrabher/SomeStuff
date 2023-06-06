@@ -25,6 +25,7 @@
                 if (!CheckIfValueIsValid(_puzzle, x, y, value))
                 {
                     string errorMessage = $"The number {value} you set at position Row: {x} Column: {y}  do not match the sudoku rules";
+                    
                     throw new Exception(errorMessage);
                 }
                 _puzzle[x, y] = value;

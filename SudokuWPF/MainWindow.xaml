@@ -10,17 +10,8 @@
         MinWidth="600"
         MinHeight="600"
         Background="#AD8B73"
-        Icon="C:\Users\cleme\OneDrive\Lbsfe\VS\DISC\Sudoku_Favicon.jpg"
+        Icon="C:\Users\Clemens Grabher\OneDrive\Lbsfe\VS\DISC\Sudoku_Favicon.jpg"
         mc:Ignorable="d">
-
-    <!--Colors
-        #025464 - Green
-        #E57C23 - Orange
-        #E8AA42 - Yellow
-        #F8F1F1 - White
-    
-    
-    -->
 
     <Grid x:Name="mainGrid">
         <Grid.RowDefinitions>
@@ -28,10 +19,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-
-
-
+       
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -157,7 +145,7 @@
                     BorderThickness="5"
                     Margin="10,10,10,10">
                 <Grid>
-                    <TextBlock Text="The table does not comply&#x0a;        the sudoku rules"
+                    <TextBlock x:Name="_myPopupTextblock"
                                FontSize="40"
                                FontWeight="Bold"
                                Foreground="Red"
@@ -185,7 +173,7 @@
         <UniformGrid Grid.Row="2"
                      Columns="3"
                      Rows="3"
-                     Margin="45,45,45,45">
+                     Margin="45,20,45,45">
 
             
 
