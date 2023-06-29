@@ -1,188 +1,150 @@
-﻿using TicTacToeLibary;
+﻿using System.Diagnostics.CodeAnalysis;
+using TicTacToeLibary.Players;
 
 namespace TicTacToeLibary
 {
     public class TicTacToeGame
     {
-        private char[,] board = new char[3, 3];
-        private int currentPlayer = 1; 
-        private int totalMoves = 0;
 
-        public TicTacToeGame()
+        private char[,] _board = new char[3, 3];
+        private Player _player1;
+        private Player _player2;
+
+        public TicTacToeGame(Player player1, Player player2)
         {
-            InitializeBoard();
+            _player1 = player1;
+            _player1.Symbol = 'X';
+
+            _player2 = player2;
+            _player2.Symbol = 'O';
+
+            _player1.Enemy = _player2;
+            _player2.Enemy = _player1;
+
+            CurrentPlayer = _player1;
         }
 
-        private void InitializeBoard()
+        internal char[,] Board => _board;
+
+        public Player? CurrentPlayer { get; private set; }
+
+        public bool GameOver { get; private set; }
+
+        public Player? Winner { get; private set; }
+
+        public void UndoMove(Move move)
         {
-            int cellValue = 1;
-            for (int row = 0; row < 3; row++)
-            {
-                for (int col = 0; col < 3; col++)
-                {
-                    board[row, col] = cellValue.ToString()[0];
-                    cellValue++;
-                }
-            }
+            _board[move.Y, move.X] = default;
         }
 
-        public void Play()
+        public List<Move> GetPossibleMoves() => GetPossibleMoves(_board);
+        internal static List<Move> GetPossibleMoves(char[,] board)
         {
-            bool gameActive = true;
+            var result = new List<Move>();
 
-            while (gameActive)
+            for (var y = 0; y < 3; y++)
             {
-                Console.Clear();
-                DrawBoard();
-
-                //TODO - if player or AI 
-                int choice = GetPlayerChoice();
-
-                if (IsValidMove(choice))
+                for (var x = 0; x < 3; x++)
                 {
-                    UpdateBoard(choice);
-                    totalMoves++;
-
-                    if (CheckForWin())
+                    if (board[y, x] != 'X' && board[y, x] != 'O')
                     {
-                        Console.Clear();
-                        DrawBoard();
-                        Console.WriteLine("Player {0} wins!", currentPlayer);
-                        gameActive = false;
-                    }
-                    else if (totalMoves == 9)
-                    {
-                        Console.Clear();
-                        DrawBoard();
-                        Console.WriteLine("It's a draw!");
-                        gameActive = false;
-                    }
-                    else
-                    {
-                        currentPlayer = (currentPlayer == 1) 
-                            ? 2 
-                            : 1;
+                        result.Add(new Move(x, y));
                     }
                 }
-                else
-                {
-                    Console.WriteLine("Invalid move! Press any key to try again...");
-                    Console.ReadKey();
-                }
+            }
+            return result;
+
+        }
+       
+
+        public void UpdateBoard(Move move)
+        {
+            bool IsFree(int x, int y) => _board[y, x] is not 'X' and not 'O';
+            if (GameOver)
+            {
+                throw new Exception("Already Game over");
             }
 
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
-        }
-
-        private void DrawBoard()
-        {
-            for (int row = 0; row < 3; row++)
+            //if (move.X < 0 || move.X > 2 || move.Y < 0 || move.Y > 2 || !IsFree(move.X, move.Y))
+            if (move.X is < 0 or > 2 || move.Y is < 0 or > 2 || !IsFree(move.X, move.Y))
             {
-                for (int col = 0; col < 3; col++)
-                {
-                    Console.Write(" {0} ", board[row, col]);
-                    if (col < 2)
-                        Console.Write("|");
-                }
-                Console.WriteLine();
-                if (row < 2)
-                    Console.WriteLine("---+---+---");
+                throw new Exception("Move invalid");
             }
-        }
 
-        private int GetPlayerChoice()
-        {
-            Console.WriteLine("\nPlayer {0}, enter your choice (1-9):", currentPlayer);
-
-            string? input = Console.ReadLine();
-
-            if (input != null && IsNumeric(input))
+            // _ bedeutet Discard(wegwerfen) und weißt den Current player somit ins leere zu. die beiden Fragezeichen bedeuten, wenn links null ist nimmt er rechts.
+            //_ = CurrentPlayer ?? throw new Exception("Already Game over");
+            if (CurrentPlayer == null)
             {
-                return Convert.ToInt32(input);
+                throw new Exception("Current player is null!");
+            }
+            _board[move.Y, move.X] = CurrentPlayer.Symbol;
+
+
+
+            var status = CheckForWin(_board);
+
+            if (status > -1)
+            {
+                GameOver = true;
+                if (status > 0)
+                {
+                    Winner = CurrentPlayer;
+                }
+                CurrentPlayer = null;
             }
             else
             {
-                return 0;
+                CurrentPlayer = CurrentPlayer.Enemy;
+                if (CurrentPlayer is BotPlayer bot)
+                {
+                    var botMove = bot.GetMove(this);
+                    UpdateBoard(botMove);
+                }
             }
-
-            //return Convert.ToInt32(Console.ReadLine());
         }
 
-        private bool IsValidMove(int choice)
-        {
-            int input = choice - 1;
-            int row = input / 3;
-            int col = input % 3;
+     
+        /// <summary>
+        /// Checks the current status of the game
+        ///  -1 Game ongoing
+        ///  0 Draw
+        ///  1 Player1 won
+        ///  2 Player2 won
+        /// </summary>
+        /// <returns></returns>
 
-            if (choice < 1 || choice > 9)
-                return false;
 
-            if (board[row, col] == 'X' || board[row, col] == 'O')
-                return false;
-
-            return true;
-        }
-
-        private void UpdateBoard(int choice)
-        {
-            int position = choice - 1;
-            int row = position / 3;
-            int col = position % 3;
-            board[row, col] = (currentPlayer == 1) 
-                ? 'X' 
-                : 'O';
-
-            //if (currentPlayer == 1)
-            //{
-            //    board[row, col] = 'X';
-            //}
-            //else
-            //{
-            //    board[row, col] = 'O';
-            //}
-        }
-
-        private bool CheckForWin()
+        internal static int CheckForWin(char[,] board)
         {
             // Check rows
             for (int row = 0; row < 3; row++)
             {
-                if (board[row, 0] == board[row, 1] && board[row, 1] == board[row, 2])
-                    return true;
+                if (board[row, 0] != default && board[row, 0] == board[row, 1] && board[row, 1] == board[row, 2])
+                    return board[row, 0] == 'X' ? 1 : 2;
             }
 
             // Check columns
             for (int col = 0; col < 3; col++)
             {
-                if (board[0, col] == board[1, col] && board[1, col] == board[2, col])
-                    return true;
+                if (board[0, col] != default && board[0, col] == board[1, col] && board[1, col] == board[2, col])
+                    return board[0, col] == 'X' ? 1 : 2;
             }
 
             // Check diagonals
-            if (board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2])
-                return true;
-            if (board[0, 2] == board[1, 1] && board[1, 1] == board[2, 0])
-                return true;
+            if (board[0, 0] != default && board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2])
+                return board[0, 0] == 'X' ? 1 : 2;
+            if (board[0, 2] != default && board[0, 2] == board[1, 1] && board[1, 1] == board[2, 0])
+                return board[0, 2] == 'X' ? 1 : 2;
 
-            return false;
+
+            //if (GetPossibleMoves().Count == 0)
+            //    return 0;
+            //return -1;
+            return GetPossibleMoves(board).Count == 0
+                ? 0
+                : -1;
         }
 
-        public static bool IsNumeric(string input)
-        {
-            double result;
-            return double.TryParse(input, out result);
-        }
-
-        // Get 0 if O wins
-        // Get 2 if X wins
-        // Get 1 if draw
-        // Get -1 if it not clear at the moment
-        public static (int, int) MiniMax()
-        {
-            return (0, 0);
-        }
+        public char GetBoardContent(int x, int y) => _board[y, x];
     }
-
-
 }

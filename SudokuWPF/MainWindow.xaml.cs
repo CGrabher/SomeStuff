@@ -29,6 +29,7 @@ namespace SudokuWPF
 
         private bool _canSolve = true;
 
+
         public MainWindow()
         {
             InitializeComponent();
@@ -197,14 +198,13 @@ namespace SudokuWPF
                     }
                     else
                     {
-                        string errMsg = "          Sorry mate\nThis sudoku is unsolvable!";
+                        string errMsg = "            Sorry mate,\nthis sudoku is unsolvable!";
                         
                         ShowErrorPopup(errMsg);
                     }
-
                 }
-                
             }
+
             SolidColorBrush myBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFBE9"));
 
             SolidColorBrush foregroundBlack = new SolidColorBrush(Colors.Black);
