@@ -9,15 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-
-
 namespace TicTacToeConsoleApp;
 
 internal class Program
 {
     public static void Main()
     {
-
         var player1 = GetHumanPlayer(1);
         var player2 = GetOpponent();
 
@@ -36,7 +33,6 @@ internal class Program
             .Title("Play again?")
             .UseConverter(x => x ? "Yes" : "No")
             .AddChoices(new[] { true, false }));
-
         return again;
     }
 

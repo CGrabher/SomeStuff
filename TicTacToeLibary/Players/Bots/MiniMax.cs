@@ -10,7 +10,7 @@
 
         internal override Move GetMove(TicTacToeGame game)
         {
-           return GetBestMove((char[,])game.Board.Clone(), game.CurrentPlayer!);
+            return GetBestMove((char[,])game.Board.Clone(), game.CurrentPlayer!);
         }
  
         private BotMove GetBestMove(char[,] board, Player current)

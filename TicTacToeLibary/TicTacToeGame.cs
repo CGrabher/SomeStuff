@@ -55,7 +55,54 @@ namespace TicTacToeLibary
             return result;
 
         }
-       
+
+        //public async Task UpdateBoardAsync(Move move)
+        //{
+        //    bool IsFree(int x, int y) => _board[y, x] is not 'X' and not 'O';
+
+        //    if (GameOver)
+        //    {
+        //        throw new Exception("Spiel ist bereits vorbei");
+        //    }
+
+        //    if (move.X is < 0 or > 2 || move.Y is < 0 or > 2 || !IsFree(move.X, move.Y))
+        //    {
+        //        throw new Exception("Zug ungültig");
+        //    }
+
+        //    if (CurrentPlayer == null)
+        //    {
+        //        throw new Exception("Aktueller Spieler ist null!");
+        //    }
+
+        //    _board[move.Y, move.X] = CurrentPlayer.Symbol;
+
+        //    var status = CheckForWin(_board);
+
+        //    if (status > -1)
+        //    {
+        //        GameOver = true;
+        //        if (status > 0)
+        //        {
+        //            Winner = CurrentPlayer;
+        //        }
+        //        CurrentPlayer = null;
+        //    }
+        //    else
+        //    {
+        //        CurrentPlayer = CurrentPlayer.Enemy;
+
+        //        if (CurrentPlayer is BotPlayer bot)
+        //        {
+        //            await Task.Delay(TimeSpan.FromSeconds(1)); 
+        //            var botMove = bot.GetMove(this);
+        //            await UpdateBoardAsync(botMove);
+        //        }
+        //    }
+        //}
+
+
+
 
         public void UpdateBoard(Move move)
         {
@@ -103,7 +150,7 @@ namespace TicTacToeLibary
             }
         }
 
-     
+
         /// <summary>
         /// Checks the current status of the game
         ///  -1 Game ongoing

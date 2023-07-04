@@ -1,74 +1,176 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Windows.Data;
+using System.Windows;
 using System.Windows.Input;
 using TicTacToeLibary;
 using TicTacToeLibary.Players;
 using TicTacToeLibary.Players.Bots;
 using TicTacToeWPF.Model;
+using System.Reflection.Metadata;
+using System.Reflection;
+using System.Threading;
 
 namespace TicTacToeWPF.ViewModel
 {
     internal class TicTacToeViewModel : BaseViewModel
     {
         private TicTacToeGame _game;
-        private ObservableCollection<string> _board;
-        private RelayCommand _cellCommand;
 
         public TicTacToeViewModel()
         {
-
             SelectableTypes = PlayerType.GetPlayerTypes();
-
             _playerOneSelection = SelectableTypes.First();
-
-
-
-
-
-
-            _game = new TicTacToeGame(new HumanPlayer("Player 1"), new BobBot());
-            _board = new ObservableCollection<string>(new string[9]);
-
-            _cellCommand = new RelayCommand(CellClick, CanCellClick);
+            _playerTwoSelection = SelectableTypes.First();
+            CellCommand = new RelayCommand(CellClick, CanCellClick);
         }
-
 
         public List<PlayerType> SelectableTypes { get; }
 
         private PlayerType _playerOneSelection;
-        public PlayerType PlayerOneSelection 
+        private PlayerType _playerTwoSelection;
+
+        public PlayerType PlayerOneSelection
         {
             get => _playerOneSelection;
             set
             {
-                if (value == _playerOneSelection) 
+                if (value == _playerOneSelection)
                     return;
+
                 _playerOneSelection = value;
-                 OnPropertyChanged();
-            } 
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(PlayerOneNameVisibility));
+            }
         }
-
-
-
-
-        public ObservableCollection<string> Board
+        public string _playerOneName;
+        public string PlayerOneName
         {
-            get { return _board; }
-            set { _board = value; OnPropertyChanged(); }
+            get => _playerOneName;
+            set
+            {
+                if (value == _playerOneName)
+                    return;
+
+                _playerOneName = value;
+                OnPropertyChanged();
+            }
         }
+        public Visibility PlayerOneNameVisibility => PlayerOneSelection.IsHuman ? Visibility.Visible : Visibility.Hidden;
 
-        public ICommand CellCommand => _cellCommand;
-
-        private bool CanCellClick(object? parameter)
+        public PlayerType PlayerTwoSelection
         {
-            if (_game.GameOver)
-                return false;
+            get => _playerTwoSelection;
+            set
+            {
+                if (value == _playerTwoSelection)
+                    return;
 
-            var index = int.Parse(parameter?.ToString() ?? "");
-            return _game.GetBoardContent(index % 3, index / 3) == default;
+                _playerTwoSelection = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(PlayerTwoNameVisibility));
+            }
+        }
+        public string _playerTwoName;
+        public string PlayerTwoName
+        {
+            get => _playerTwoName;
+            set
+            {
+                if (value == _playerTwoName)
+                    return;
+
+                _playerTwoName = value;
+                OnPropertyChanged();
+            }
+        }
+        public Visibility PlayerTwoNameVisibility => PlayerTwoSelection.IsHuman ? Visibility.Visible : Visibility.Hidden;
+        public bool IsHumanPlayerSelectedTwo => PlayerTwoSelection.IsHuman;
+
+        public string _gameDialogue;
+        public string GameDialogue
+        {
+            get => _gameDialogue;
+            set
+            {
+                if (value == _gameDialogue)
+                    return;
+
+                _gameDialogue = value;
+                OnPropertyChanged();
+            }
+        }
+        private void UpdateGameDialogue()
+        {
+            if (_game == null)
+            {
+                GameDialogue = "";
+            }
+            else if (_game.GameOver)
+            {
+                if (_game.Winner != null)
+                    GameDialogue = $"{_game.Winner.Name} wins!";
+                else
+                    GameDialogue = "It's a draw!";
+            }
+            else
+            {
+                GameDialogue = $"It's {_game.CurrentPlayer?.Name}'s turn";
+            }
         }
 
+
+        private RelayCommand _playCommand;
+        public ICommand PlayCommand => _playCommand ??= new RelayCommand(param => StartGame(), param => CanStartGame());
+        public void StartGame()
+        {
+            var player1 = PlayerOneSelection.CreatePlayer(PlayerOneName);
+            var player2 = PlayerTwoSelection.CreatePlayer(PlayerTwoName);
+
+            _game = new TicTacToeGame(player1, player2);
+            OnPropertyChanged(nameof(Board));
+            UpdateGameDialogue();
+        }
+        private bool CanStartGame()
+        {
+            bool gameNotInProgress = _game == null || _game.GameOver;
+
+
+
+            bool playerNamesAreSet = !(
+                PlayerOneSelection.IsHuman && string.IsNullOrWhiteSpace(PlayerOneName) ||
+                PlayerTwoSelection.IsHuman && string.IsNullOrWhiteSpace(PlayerTwoName));
+
+            //if (!playerNamesAreSet)
+            //{
+            //    GameDialogue = "Choose a name";
+            //}
+            return gameNotInProgress && playerNamesAreSet;
+        }
+
+        public string[] Board
+        {
+            get
+            {
+                var result = new string[9];
+
+                if (_game is null)
+                    return result;
+
+                for (int i = 0; i < 9; i++)
+                {
+                    var x = i % 3;
+                    var y = i / 3;
+                    result[i] = _game.GetBoardContent(x, y).ToString();
+                };
+                return result;
+            }
+        }
+        
+        public ICommand CellCommand { get; }
         private void CellClick(object? parameter)
         {
             var index = int.Parse(parameter?.ToString() ?? "");
@@ -78,16 +180,38 @@ namespace TicTacToeWPF.ViewModel
 
             _game.UpdateBoard(move);
 
-            var symbol = _game.GetBoardContent(x, y);
-            Board[index] = symbol.ToString();
 
-            if (_game.GameOver)
+            OnPropertyChanged(nameof(Board));
+            UpdateGameDialogue();
+
+            //if (_game.GameOver)
+            //{
+            //    if (_game.Winner != null)
+            //        MessageBox.Show($"Player {_game.Winner.Name} wins!");
+            //    else
+            //        MessageBox.Show("It's a draw!");
+            //}
+        }
+        private bool CanCellClick(object? parameter)
+        {
+            if (_game is null || _game.GameOver)
+                return false;
+
+            var index = int.Parse(parameter?.ToString() ?? "");
+            var x = index % 3;
+            var y = index / 3;
+            var moves = _game.GetPossibleMoves();
+            foreach(var move in moves)
             {
-                if (_game.Winner != null)
-                    System.Windows.MessageBox.Show($"Player {_game.Winner.Name} wins!");
-                else
-                    System.Windows.MessageBox.Show("It's a draw!");
+                if (move.X == x && move.Y == y)
+                    return true;
             }
+            
+            return false;
+
+            //var index = int.Parse(parameter?.ToString() ?? "");
+            //var result = _game.GetBoardContent(index % 3, index / 3) == default;
+            //return result;
         }
     }
 }

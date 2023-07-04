@@ -13,8 +13,6 @@ namespace TicTacToeWPF.View
         public TicTacToeWindow()
         {
             InitializeComponent();
-          
         }
-
     }
 }
