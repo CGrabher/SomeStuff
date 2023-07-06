@@ -22,15 +22,20 @@ namespace TicTacToeLibary
             _player2.Enemy = _player1;
 
             CurrentPlayer = _player1;
+
+            if (CurrentPlayer is BotPlayer bot)
+            {
+                var botMove = bot.GetMove(this);
+                UpdateBoard(botMove);
+            }
         }
 
         internal char[,] Board => _board;
-
         public Player? CurrentPlayer { get; private set; }
-
         public bool GameOver { get; private set; }
-
         public Player? Winner { get; private set; }
+        public Player? Player1 { get; set; }
+        public Player? Player2 { get; set; }
 
         public void UndoMove(Move move)
         {
@@ -53,56 +58,7 @@ namespace TicTacToeLibary
                 }
             }
             return result;
-
         }
-
-        //public async Task UpdateBoardAsync(Move move)
-        //{
-        //    bool IsFree(int x, int y) => _board[y, x] is not 'X' and not 'O';
-
-        //    if (GameOver)
-        //    {
-        //        throw new Exception("Spiel ist bereits vorbei");
-        //    }
-
-        //    if (move.X is < 0 or > 2 || move.Y is < 0 or > 2 || !IsFree(move.X, move.Y))
-        //    {
-        //        throw new Exception("Zug ungültig");
-        //    }
-
-        //    if (CurrentPlayer == null)
-        //    {
-        //        throw new Exception("Aktueller Spieler ist null!");
-        //    }
-
-        //    _board[move.Y, move.X] = CurrentPlayer.Symbol;
-
-        //    var status = CheckForWin(_board);
-
-        //    if (status > -1)
-        //    {
-        //        GameOver = true;
-        //        if (status > 0)
-        //        {
-        //            Winner = CurrentPlayer;
-        //        }
-        //        CurrentPlayer = null;
-        //    }
-        //    else
-        //    {
-        //        CurrentPlayer = CurrentPlayer.Enemy;
-
-        //        if (CurrentPlayer is BotPlayer bot)
-        //        {
-        //            await Task.Delay(TimeSpan.FromSeconds(1)); 
-        //            var botMove = bot.GetMove(this);
-        //            await UpdateBoardAsync(botMove);
-        //        }
-        //    }
-        //}
-
-
-
 
         public void UpdateBoard(Move move)
         {
@@ -126,8 +82,6 @@ namespace TicTacToeLibary
             }
             _board[move.Y, move.X] = CurrentPlayer.Symbol;
 
-
-
             var status = CheckForWin(_board);
 
             if (status > -1)
@@ -138,6 +92,9 @@ namespace TicTacToeLibary
                     Winner = CurrentPlayer;
                 }
                 CurrentPlayer = null;
+
+                ////////////////////////////////////////
+                // Save to DB
             }
             else
             {
@@ -150,7 +107,6 @@ namespace TicTacToeLibary
             }
         }
 
-
         /// <summary>
         /// Checks the current status of the game
         ///  -1 Game ongoing
@@ -159,7 +115,6 @@ namespace TicTacToeLibary
         ///  2 Player2 won
         /// </summary>
         /// <returns></returns>
-
 
         internal static int CheckForWin(char[,] board)
         {

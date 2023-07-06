@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Windows.Data;
 using System.Windows;
 using System.Windows.Input;
 using TicTacToeLibary;
-using TicTacToeLibary.Players;
-using TicTacToeLibary.Players.Bots;
 using TicTacToeWPF.Model;
-using System.Reflection.Metadata;
-using System.Reflection;
-using System.Threading;
 
 namespace TicTacToeWPF.ViewModel
 {
     internal class TicTacToeViewModel : BaseViewModel
     {
-        private TicTacToeGame _game;
 
         public TicTacToeViewModel()
         {
@@ -31,8 +22,6 @@ namespace TicTacToeWPF.ViewModel
         public List<PlayerType> SelectableTypes { get; }
 
         private PlayerType _playerOneSelection;
-        private PlayerType _playerTwoSelection;
-
         public PlayerType PlayerOneSelection
         {
             get => _playerOneSelection;
@@ -46,8 +35,8 @@ namespace TicTacToeWPF.ViewModel
                 OnPropertyChanged(nameof(PlayerOneNameVisibility));
             }
         }
-        public string _playerOneName;
-        public string PlayerOneName
+        public string? _playerOneName;
+        public string? PlayerOneName
         {
             get => _playerOneName;
             set
@@ -60,7 +49,8 @@ namespace TicTacToeWPF.ViewModel
             }
         }
         public Visibility PlayerOneNameVisibility => PlayerOneSelection.IsHuman ? Visibility.Visible : Visibility.Hidden;
-
+ 
+        private PlayerType _playerTwoSelection;
         public PlayerType PlayerTwoSelection
         {
             get => _playerTwoSelection;
@@ -74,8 +64,8 @@ namespace TicTacToeWPF.ViewModel
                 OnPropertyChanged(nameof(PlayerTwoNameVisibility));
             }
         }
-        public string _playerTwoName;
-        public string PlayerTwoName
+        public string? _playerTwoName;
+        public string? PlayerTwoName
         {
             get => _playerTwoName;
             set
@@ -88,42 +78,13 @@ namespace TicTacToeWPF.ViewModel
             }
         }
         public Visibility PlayerTwoNameVisibility => PlayerTwoSelection.IsHuman ? Visibility.Visible : Visibility.Hidden;
-        public bool IsHumanPlayerSelectedTwo => PlayerTwoSelection.IsHuman;
 
-        public string _gameDialogue;
-        public string GameDialogue
-        {
-            get => _gameDialogue;
-            set
-            {
-                if (value == _gameDialogue)
-                    return;
+        [MemberNotNullWhen(false, nameof(_game))] //help the stupid compiler
+        public bool IsGamePreparation => _game is null || _game.GameOver;
 
-                _gameDialogue = value;
-                OnPropertyChanged();
-            }
-        }
-        private void UpdateGameDialogue()
-        {
-            if (_game == null)
-            {
-                GameDialogue = "";
-            }
-            else if (_game.GameOver)
-            {
-                if (_game.Winner != null)
-                    GameDialogue = $"{_game.Winner.Name} wins!";
-                else
-                    GameDialogue = "It's a draw!";
-            }
-            else
-            {
-                GameDialogue = $"It's {_game.CurrentPlayer?.Name}'s turn";
-            }
-        }
+        private TicTacToeGame? _game;
 
-
-        private RelayCommand _playCommand;
+        private RelayCommand? _playCommand;
         public ICommand PlayCommand => _playCommand ??= new RelayCommand(param => StartGame(), param => CanStartGame());
         public void StartGame()
         {
@@ -131,25 +92,24 @@ namespace TicTacToeWPF.ViewModel
             var player2 = PlayerTwoSelection.CreatePlayer(PlayerTwoName);
 
             _game = new TicTacToeGame(player1, player2);
+
             OnPropertyChanged(nameof(Board));
-            UpdateGameDialogue();
+            OnPropertyChanged(nameof(IsGamePreparation));
+            OnPropertyChanged(nameof(GameDialogue));
+
         }
         private bool CanStartGame()
         {
-            bool gameNotInProgress = _game == null || _game.GameOver;
-
-
-
             bool playerNamesAreSet = !(
                 PlayerOneSelection.IsHuman && string.IsNullOrWhiteSpace(PlayerOneName) ||
                 PlayerTwoSelection.IsHuman && string.IsNullOrWhiteSpace(PlayerTwoName));
-
-            //if (!playerNamesAreSet)
-            //{
-            //    GameDialogue = "Choose a name";
-            //}
-            return gameNotInProgress && playerNamesAreSet;
+            return 
+                IsGamePreparation && playerNamesAreSet;
         }
+        //private bool CanStartGame() => 
+        //    IsGamePreparation &&
+        //    (PlayerOneSelection.IsBot || !string.IsNullOrWhiteSpace(PlayerOneName)) &&
+        //    (PlayerTwoSelection.IsBot || !string.IsNullOrWhiteSpace(PlayerTwoName));
 
         public string[] Board
         {
@@ -160,6 +120,7 @@ namespace TicTacToeWPF.ViewModel
                 if (_game is null)
                     return result;
 
+
                 for (int i = 0; i < 9; i++)
                 {
                     var x = i % 3;
@@ -169,49 +130,80 @@ namespace TicTacToeWPF.ViewModel
                 return result;
             }
         }
-        
+
         public ICommand CellCommand { get; }
         private void CellClick(object? parameter)
         {
+            if (IsGamePreparation)
+                return; //a bit redundant, but actually makes it water-tight
+
             var index = int.Parse(parameter?.ToString() ?? "");
             var x = index % 3;
             var y = index / 3;
-            var move = new Move(x, y);
 
-            _game.UpdateBoard(move);
-
-
+            _game.UpdateBoard(new Move(x, y));
+           
             OnPropertyChanged(nameof(Board));
-            UpdateGameDialogue();
-
-            //if (_game.GameOver)
-            //{
-            //    if (_game.Winner != null)
-            //        MessageBox.Show($"Player {_game.Winner.Name} wins!");
-            //    else
-            //        MessageBox.Show("It's a draw!");
-            //}
+            OnPropertyChanged(nameof(IsGamePreparation));
+            OnPropertyChanged(nameof(GameDialogue));
         }
         private bool CanCellClick(object? parameter)
         {
-            if (_game is null || _game.GameOver)
+            if (IsGamePreparation)
                 return false;
 
             var index = int.Parse(parameter?.ToString() ?? "");
             var x = index % 3;
             var y = index / 3;
-            var moves = _game.GetPossibleMoves();
-            foreach(var move in moves)
-            {
-                if (move.X == x && move.Y == y)
-                    return true;
-            }
-            
-            return false;
+           
+            var m = new Move(x, y);
+            return _game.GetPossibleMoves().Any(pm => pm.Equals(m));
 
-            //var index = int.Parse(parameter?.ToString() ?? "");
-            //var result = _game.GetBoardContent(index % 3, index / 3) == default;
-            //return result;
+            //var moves = _game.GetPossibleMoves();
+            //foreach (var move in moves)
+            //{
+            //    if (move.X == x && move.Y == y)
+            //        return true;
+            //}
+
+            //return false;
+
         }
+
+        public string GameDialogue
+        {
+            get
+            {
+                if (_game == null)
+                    return "";
+                else if (_game.GameOver)
+                {
+                    if (_game.Winner != null)
+                        return $"{_game.Winner.Name} wins!";
+                    else
+                        return "It's a draw!";
+                }
+                else
+                    return $"It's {_game.CurrentPlayer?.Name}'s turn";
+            }
+        }
+        //public string GameDialogue =>
+        //    _game is null
+        //        ? string.Empty
+        //        : !_game.GameOver
+        //            ? $"It's {_game.CurrentPlayer?.Name}'s turn"
+        //            : _game.Winner is null
+        //                ? "It's a draw!"
+        //                : $"{_game.Winner.Name} wins!";
+
+        //public string GameDialogue => (_game is null, _game?.GameOver == true, _game?.Winner is not null) switch
+        //{
+        //    (true, _, _) => string.Empty,
+        //    (_, false, _) => $"It's {_game?.CurrentPlayer?.Name}'s turn",
+        //    (_, _, true) => $"{_game!.Winner!.Name} wins!",
+        //    (_, _, false) => "It's a draw!"
+        //};
+
+
     }
 }
