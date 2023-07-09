@@ -6,7 +6,10 @@ namespace TicTacToeLibary.Players
     {
         public HumanPlayer(string name) : base(name)
         {
+        }
 
+        public HumanPlayer() : base("")
+        {
         }
     }
 }

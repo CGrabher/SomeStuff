@@ -36,6 +36,7 @@
                 board[m.Y, m.X] = default;
             }
 
+
             var chosenValue = current.Symbol == 'O'
                 ? moves.Max(x => x.Value)
                 : moves.Min(x => x.Value);
@@ -43,6 +44,7 @@
             return moves[_random.Next(moves.Count)];
 
         }
+
 
         //internal override Move GetMove(TicTacToeGame game)
         //{
