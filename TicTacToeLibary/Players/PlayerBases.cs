@@ -21,16 +21,6 @@ namespace TicTacToeLibary.Players
             Name = name;
         }
 
-
-        public static string InitializeDatabase()
-        {
-            var db = new TicTacToeDatabaseContext();
-            db.fillDatabase();
-            return db.DbPath;
-
-        }
-
-
     }
 
     public class GameResult

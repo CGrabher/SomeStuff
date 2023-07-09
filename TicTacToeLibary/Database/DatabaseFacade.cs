@@ -9,7 +9,8 @@ namespace TicTacToeLibary.Database;
 
 public class DatabaseFacade
 {
-
+    // - Add-Migration InitialCreate
+    //
     private TicTacToeDatabaseContext context = new TicTacToeDatabaseContext();
 
     public string getHighScoreOfCurrentMonth()

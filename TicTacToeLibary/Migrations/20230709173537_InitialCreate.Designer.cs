@@ -11,7 +11,7 @@ using TicTacToeLibary.Database;
 namespace TicTacToeLibary.Migrations
 {
     [DbContext(typeof(TicTacToeDatabaseContext))]
-    [Migration("20230709161233_InitialCreate")]
+    [Migration("20230709173537_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
