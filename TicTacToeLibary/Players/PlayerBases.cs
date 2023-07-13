@@ -39,6 +39,14 @@ namespace TicTacToeLibary.Players
         public DateTime DateTime { get; set; }
     }
 
+    public class GameResult
+    {
+        public int GameResultId { get; set; }
+        public int Score { get; set; }
+        public DateTime DateTime { get; set; }
+        public Player Player { get; set; }
+    }
+
     public abstract class BotPlayer : Player
     {
         public BotPlayer(string name) : base(name)

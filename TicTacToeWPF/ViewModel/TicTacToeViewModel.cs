@@ -13,12 +13,14 @@ using TicTacToeWPF.Model;
 using System.Reflection.Metadata;
 using System.Reflection;
 using System.Threading;
+using TicTacToeLibary.Database;
 
 namespace TicTacToeWPF.ViewModel
 {
     internal class TicTacToeViewModel : BaseViewModel
     {
         private TicTacToeGame _game;
+        private DatabaseFacade _dbFacade;
 
         public TicTacToeViewModel()
         {
@@ -26,8 +28,9 @@ namespace TicTacToeWPF.ViewModel
             _playerOneSelection = SelectableTypes.First();
             _playerTwoSelection = SelectableTypes.First();
             CellCommand = new RelayCommand(CellClick, CanCellClick);
+            _dbFacade = new DatabaseFacade();
+            //MessageBox.Show(Player.InitializeDatabase());
 
-            MessageBox.Show(Player.InitializeDatabase());
             
         }
 
@@ -118,6 +121,28 @@ namespace TicTacToeWPF.ViewModel
                     GameDialogue = $"{_game.Winner.Name} wins!";
                 else
                     GameDialogue = "It's a draw!";
+
+                // update database
+                var p1 = _dbFacade.addPlayerToDatabase(_game.Player1.Name);
+                var p2 = _dbFacade.addPlayerToDatabase(_game.Player2.Name);
+
+                if (_game.Winner == _game.Player1)
+                {
+                    _dbFacade.addResultToPlayer(p1, 10);
+                    _dbFacade.addResultToPlayer(p2, 0);
+                } else if (_game.Winner == _game.Player2)
+                {
+                    _dbFacade.addResultToPlayer(p1, 0);
+                    _dbFacade.addResultToPlayer(p2, 10);
+                }
+                else
+                {
+                    //draw
+                    _dbFacade.addResultToPlayer(p1, 5);
+                    _dbFacade.addResultToPlayer(p2, 5);
+                }
+                _dbFacade.UpdateDatabase();
+
             }
             else
             {
@@ -128,6 +153,9 @@ namespace TicTacToeWPF.ViewModel
 
         private RelayCommand _playCommand;
         public ICommand PlayCommand => _playCommand ??= new RelayCommand(param => StartGame(), param => CanStartGame());
+
+        private RelayCommand _highScoreCommand;
+        public ICommand HighScoreCommand => _highScoreCommand ??= new RelayCommand(param => MessageBox.Show(_dbFacade.getHighScoreOfCurrentMonth()), param => true);
         public void StartGame()
         {
             var player1 = PlayerOneSelection.CreatePlayer(PlayerOneName);

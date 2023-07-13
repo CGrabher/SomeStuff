@@ -34,8 +34,18 @@ namespace TicTacToeLibary
         public Player? CurrentPlayer { get; private set; }
         public bool GameOver { get; private set; }
         public Player? Winner { get; private set; }
-        public Player? Player1 { get; set; }
-        public Player? Player2 { get; set; }
+        public Player? Player1 { get
+            {
+                return _player1;
+            }
+        }
+        public Player? Player2
+        {
+            get
+            {
+                return _player2;
+            }
+        }
 
         public void UndoMove(Move move)
         {
