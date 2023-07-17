@@ -1,0 +1,123 @@
+﻿<Window x:Class="SunInfo.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:SunInfo.ViewModel"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="MainWindow"
+        Width="800"
+        Height="450"
+        Icon="C:\Users\Clemens Grabher\OneDrive\Lbsfe\VS\DISC\SunInfo\Resources\sun (1).ico"
+        mc:Ignorable="d">
+
+
+    <!--  Nur sichtbar wenn nicht null - Grid in grid in dem danach das und noch ein error und loading grid dteckt und dann visibility ja nach zustand ändern  -->
+    <Grid>
+
+        <!--Loading View-->
+        <Grid>
+            <TextBlock x:Name="loadingTextBlock"
+                       Text="Loading"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="Green"
+                       FontSize="50"
+                       FontWeight="Bold">
+            </TextBlock>
+        </Grid>
+
+        <!--Error View-->
+        <Grid>
+            
+        </Grid>
+        <TextBlock Text="Error while loading&#x0a;Please try again"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Foreground="Red"
+                   FontSize="50"
+                   FontWeight="Bold"></TextBlock>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Label x:Name="txtSunrise"
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="Sunrise"
+                       FontSize="25"
+                       FontWeight="Bold" />
+
+                <Label x:Name="txtSunset"
+                       Grid.Row="0"
+                       Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       Content="Sunset"
+                       FontSize="25"
+                       FontWeight="Bold" />
+
+                <Label x:Name="infoSunrise"
+                       Grid.Row="1"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="{Binding SunInfo.Sunrise}"
+                       FontSize="25" />
+
+                <Label x:Name="infoSunset"
+                       Grid.Row="1"
+                       Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       Content="{Binding SunInfo.Sunset}"
+                       FontSize="25" />
+            </Grid>
+
+            <Label x:Name="txtDaylight"
+                   Grid.Row="1"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Content="Daylight"
+                   FontSize="25"
+                   FontWeight="Bold" />
+
+            <Label x:Name="infoDaylight"
+                   Grid.Row="2"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Content="{Binding SunInfo.Daylight}"
+                   FontSize="25" />
+
+            <Label x:Name="txtCity"
+                   Grid.Row="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Content="City"
+                   FontSize="25"
+                   FontWeight="Bold" />
+
+            <Label x:Name="infoCity"
+                   Grid.Row="4"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Content="{Binding SunInfo.City}"
+                   FontSize="25" />
+        </Grid>
+    </Grid>
+
+</Window>

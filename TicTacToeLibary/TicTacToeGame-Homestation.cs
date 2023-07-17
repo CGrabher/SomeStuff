@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using TicTacToeLibary.Database;
 using TicTacToeLibary.Players;
 
 namespace TicTacToeLibary
@@ -35,12 +34,12 @@ namespace TicTacToeLibary
         public Player? CurrentPlayer { get; private set; }
         public bool GameOver { get; private set; }
         public Player? Winner { get; private set; }
-        public Player Player1 { get
+        public Player? Player1 { get
             {
                 return _player1;
             }
         }
-        public Player Player2
+        public Player? Player2
         {
             get
             {
@@ -103,7 +102,9 @@ namespace TicTacToeLibary
                     Winner = CurrentPlayer;
                 }
                 CurrentPlayer = null;
-                SaveToDatabase(status);
+
+                ////////////////////////////////////////
+                // Save to DB
             }
             else
             {
@@ -114,19 +115,6 @@ namespace TicTacToeLibary
                     UpdateBoard(botMove);
                 }
             }
-        }
-
-        private void SaveToDatabase(int status)
-        {
-
-            var result = new GameResult(
-                Player1.Name,
-                Player2.Name,
-                (GameState)status);
-
-            using var ctx = new TicTacToeDatabaseContext();
-            ctx.GameResults.Add(result);
-            ctx.SaveChanges();
         }
 
         /// <summary>

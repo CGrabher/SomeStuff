@@ -1,34 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Windows.Data;
 using System.Windows;
 using System.Windows.Input;
 using TicTacToeLibary;
+using TicTacToeLibary.Players;
+using TicTacToeLibary.Players.Bots;
 using TicTacToeWPF.Model;
+using System.Reflection.Metadata;
+using System.Reflection;
+using System.Threading;
 using TicTacToeLibary.Database;
-using TicTacToeLibary.Services;
-using TicTacToeWPF.View;
-using System.Collections.ObjectModel;
-using System.Text;
 
 namespace TicTacToeWPF.ViewModel
 {
     internal class TicTacToeViewModel : BaseViewModel
     {
-        private TicTacToeGame? _game;
-       
+        private TicTacToeGame _game;
+        private DatabaseFacade _dbFacade;
+
         public TicTacToeViewModel()
         {
             SelectableTypes = PlayerType.GetPlayerTypes();
             _playerOneSelection = SelectableTypes.First();
             _playerTwoSelection = SelectableTypes.First();
             CellCommand = new RelayCommand(CellClick, CanCellClick);
-            GetHighScoreCommand = new RelayCommand(GetHighScore);
+            _dbFacade = new DatabaseFacade();
+            //MessageBox.Show(Player.InitializeDatabase());
 
+            
+        }
 
-        //MessageBox.Show(Player.InitializeDatabase());            
-    }
-
-    public List<PlayerType> SelectableTypes { get; }
+        public List<PlayerType> SelectableTypes { get; }
 
         private PlayerType _playerOneSelection;
         private PlayerType _playerTwoSelection;
@@ -46,8 +52,8 @@ namespace TicTacToeWPF.ViewModel
                 OnPropertyChanged(nameof(PlayerOneNameVisibility));
             }
         }
-        public string? _playerOneName;
-        public string? PlayerOneName
+        public string _playerOneName;
+        public string PlayerOneName
         {
             get => _playerOneName;
             set
@@ -74,8 +80,8 @@ namespace TicTacToeWPF.ViewModel
                 OnPropertyChanged(nameof(PlayerTwoNameVisibility));
             }
         }
-        public string? _playerTwoName;
-        public string? PlayerTwoName
+        public string _playerTwoName;
+        public string PlayerTwoName
         {
             get => _playerTwoName;
             set
@@ -90,8 +96,8 @@ namespace TicTacToeWPF.ViewModel
         public Visibility PlayerTwoNameVisibility => PlayerTwoSelection.IsHuman ? Visibility.Visible : Visibility.Hidden;
         public bool IsHumanPlayerSelectedTwo => PlayerTwoSelection.IsHuman;
 
-        public string? _gameDialogue;
-        public string? GameDialogue
+        public string _gameDialogue;
+        public string GameDialogue
         {
             get => _gameDialogue;
             set
@@ -115,6 +121,28 @@ namespace TicTacToeWPF.ViewModel
                     GameDialogue = $"{_game.Winner.Name} wins!";
                 else
                     GameDialogue = "It's a draw!";
+
+                // update database
+                var p1 = _dbFacade.addPlayerToDatabase(_game.Player1.Name);
+                var p2 = _dbFacade.addPlayerToDatabase(_game.Player2.Name);
+
+                if (_game.Winner == _game.Player1)
+                {
+                    _dbFacade.addResultToPlayer(p1, 10);
+                    _dbFacade.addResultToPlayer(p2, 0);
+                } else if (_game.Winner == _game.Player2)
+                {
+                    _dbFacade.addResultToPlayer(p1, 0);
+                    _dbFacade.addResultToPlayer(p2, 10);
+                }
+                else
+                {
+                    //draw
+                    _dbFacade.addResultToPlayer(p1, 5);
+                    _dbFacade.addResultToPlayer(p2, 5);
+                }
+                _dbFacade.UpdateDatabase();
+
             }
             else
             {
@@ -122,11 +150,12 @@ namespace TicTacToeWPF.ViewModel
             }
         }
 
-        private RelayCommand? _playCommand;
+
+        private RelayCommand _playCommand;
         public ICommand PlayCommand => _playCommand ??= new RelayCommand(param => StartGame(), param => CanStartGame());
 
-        
-
+        private RelayCommand _highScoreCommand;
+        public ICommand HighScoreCommand => _highScoreCommand ??= new RelayCommand(param => MessageBox.Show(_dbFacade.getHighScoreOfCurrentMonth()), param => true);
         public void StartGame()
         {
             var player1 = PlayerOneSelection.CreatePlayer(PlayerOneName);
@@ -139,6 +168,8 @@ namespace TicTacToeWPF.ViewModel
         private bool CanStartGame()
         {
             bool gameNotInProgress = _game == null || _game.GameOver;
+
+
 
             bool playerNamesAreSet = !(
                 PlayerOneSelection.IsHuman && string.IsNullOrWhiteSpace(PlayerOneName) ||
@@ -178,7 +209,7 @@ namespace TicTacToeWPF.ViewModel
             var y = index / 3;
             var move = new Move(x, y);
 
-            _game?.UpdateBoard(move);
+            _game.UpdateBoard(move);
 
 
             OnPropertyChanged(nameof(Board));
@@ -206,37 +237,12 @@ namespace TicTacToeWPF.ViewModel
                 if (move.X == x && move.Y == y)
                     return true;
             }
+            
             return false;
+
+            //var index = int.Parse(parameter?.ToString() ?? "");
+            //var result = _game.GetBoardContent(index % 3, index / 3) == default;
+            //return result;
         }
-
-
-
-
-        public ICommand GetHighScoreCommand { get; }
-        private HighScoreWindow? _highScoreWindow;
-        private void GetHighScore(object _)
-        {
-        
-          
-
-            //MessageBox.Show(result.ToString());
-
-            if (_highScoreWindow != null)
-            {
-                _highScoreWindow.WindowState = WindowState.Normal;
-                _highScoreWindow.Activate();
-                return;
-            }
-
-            var service = new HighscoreService();
-            var highScores = service.GetHighScoreLastMonth().ToList();
-            _highScoreWindow = new HighScoreWindow
-            {
-                DataContext = highScores
-            };
-            _highScoreWindow.Closed += (s, e) => _highScoreWindow = null;
-            _highScoreWindow.Show();
-        }
-
     }
 }

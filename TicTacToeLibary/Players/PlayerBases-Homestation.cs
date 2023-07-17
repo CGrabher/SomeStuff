@@ -5,8 +5,13 @@ namespace TicTacToeLibary.Players
 {
     public abstract class Player
     {
+
+        public int Id { get; set; }
         public string Name { get; set; }
+
+        [NotMapped]
         public char Symbol { get; internal set; }
+        [NotMapped]
         public Player? Enemy { get; internal set; }
 
         public List<GameResult> GameResults { get; } = new List<GameResult>();
@@ -15,9 +20,16 @@ namespace TicTacToeLibary.Players
         {
             Name = name;
         }
+
     }
 
-
+    public class GameResult
+    {
+        public int GameResultId { get; set; }
+        public int Score { get; set; }
+        public DateTime DateTime { get; set; }
+        public Player Player { get; set; }
+    }
 
     public abstract class BotPlayer : Player
     {
