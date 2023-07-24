@@ -1,123 +1,198 @@
-﻿<Window x:Class="SunInfo.View.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:SunInfo.ViewModel"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="MainWindow"
-        Width="800"
-        Height="450"
-        Icon="C:\Users\Clemens Grabher\OneDrive\Lbsfe\VS\DISC\SunInfo\Resources\sun (1).ico"
-        mc:Ignorable="d">
+﻿<Window
+    x:Class="SunInfo.View.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:SunInfo.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SunInfo.ViewModel"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="450"
+    Height="400"
+    ResizeMode="NoResize"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityInverseConverter x:Key="BooleanToVisibilityInverseConverter" />
+        <converters:TimeSpanToReadableConverter x:Key="TimeSpanToReadableConverter" />
+        <converters:TimeWithoutSecondsConverter x:Key="TimeWithoutSecondsConverter" />
 
+    </Window.Resources>
 
     <!--  Nur sichtbar wenn nicht null - Grid in grid in dem danach das und noch ein error und loading grid dteckt und dann visibility ja nach zustand ändern  -->
+
     <Grid>
 
-        <!--Loading View-->
-        <Grid>
-            <TextBlock x:Name="loadingTextBlock"
-                       Text="Loading"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Foreground="Green"
-                       FontSize="50"
-                       FontWeight="Bold">
-            </TextBlock>
-        </Grid>
+        <Button
+            Grid.Row="0"
+            Grid.Column="1"
+            Width="30"
+            Height="30"
+            Margin="0,5,10,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Background="White"
+            BorderBrush="Transparent"
+            BorderThickness="1"
+            Command="{Binding RefreshCommand}">
+            <Button.Content>
+                <Image
+                    Width="30"
+                    Height="30"
+                    Source="/Resources/ico-refresh-256.png" />
+            </Button.Content>
+        </Button>
 
-        <!--Error View-->
-        <Grid>
-            
-        </Grid>
-        <TextBlock Text="Error while loading&#x0a;Please try again"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Foreground="Red"
-                   FontSize="50"
-                   FontWeight="Bold"></TextBlock>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <!--  Loading View  -->
+            <Grid x:Name="loadingGrid"
+                  Visibility="{Binding SunInfo.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock
+                    x:Name="loadingTextBlock"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="40"
+                    FontWeight="Bold"
+                    Foreground="Green"
+                    Text="Loading" />
+                <ProgressBar
+                    Width="200"
+                    Height="30"
+                    Margin="0,0,0,110"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    BorderBrush="Transparent"
+                    Foreground="Green"
+                    IsIndeterminate="True" />
 
-            <Grid Grid.Row="0">
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <Label x:Name="txtSunrise"
-                       Grid.Row="0"
-                       Grid.Column="0"
-                       HorizontalAlignment="Center"
-                       Content="Sunrise"
-                       FontSize="25"
-                       FontWeight="Bold" />
-
-                <Label x:Name="txtSunset"
-                       Grid.Row="0"
-                       Grid.Column="1"
-                       HorizontalAlignment="Center"
-                       Content="Sunset"
-                       FontSize="25"
-                       FontWeight="Bold" />
-
-                <Label x:Name="infoSunrise"
-                       Grid.Row="1"
-                       Grid.Column="0"
-                       HorizontalAlignment="Center"
-                       Content="{Binding SunInfo.Sunrise}"
-                       FontSize="25" />
-
-                <Label x:Name="infoSunset"
-                       Grid.Row="1"
-                       Grid.Column="1"
-                       HorizontalAlignment="Center"
-                       Content="{Binding SunInfo.Sunset}"
-                       FontSize="25" />
             </Grid>
 
-            <Label x:Name="txtDaylight"
-                   Grid.Row="1"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Content="Daylight"
-                   FontSize="25"
-                   FontWeight="Bold" />
+            <Grid x:Name="mainGrid"
+                  Visibility="{Binding SunInfo.IsLoading, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
 
-            <Label x:Name="infoDaylight"
-                   Grid.Row="2"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Content="{Binding SunInfo.Daylight}"
-                   FontSize="25" />
+                <!--  Error View  -->
+                <Grid x:Name="errorGrid"
+                      Visibility="{Binding SunInfo.ErrorOnLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="40"
+                        FontWeight="Bold"
+                        Foreground="Red"
+                        Text="Error while loading Please try again"
+                        TextWrapping="Wrap" />
+                </Grid>
 
-            <Label x:Name="txtCity"
-                   Grid.Row="3"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Content="City"
-                   FontSize="25"
-                   FontWeight="Bold" />
+                <!--  Data View  -->
+                <Grid x:Name="dataGrid"
+                      Visibility="{Binding SunInfo.ErrorOnLoading, Converter={StaticResource BooleanToVisibilityInverseConverter}, ConverterParameter=true}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
 
-            <Label x:Name="infoCity"
-                   Grid.Row="4"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Content="{Binding SunInfo.City}"
-                   FontSize="25" />
+                    <Grid Grid.Row="0">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Label
+                            x:Name="txtSunrise"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,10,50,0"
+                            HorizontalAlignment="Center"
+                            Content="Sunrise"
+                            FontSize="25"
+                            FontWeight="Bold" />
+
+                        <Label
+                            x:Name="txtSunset"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="50,10,0,0"
+                            HorizontalAlignment="Center"
+                            Content="Sunset"
+                            FontSize="25"
+                            FontWeight="Bold" />
+
+
+                        <!--    -->
+
+                        <TextBlock
+                            x:Name="infoSunrise"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,50,0"
+                            HorizontalAlignment="Center"
+                            FontSize="25"
+                            Text="{Binding SunInfo.Value.Sunrise, StringFormat=\{0:h\\:mm\}}" />
+
+                        <Label
+                            x:Name="infoSunset"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="50,0,0,0"
+                            HorizontalAlignment="Center"
+                            Content="{Binding SunInfo.Value.Sunset, Converter={StaticResource TimeWithoutSecondsConverter}}"
+                            FontSize="25" />
+                    </Grid>
+
+                    <Label
+                        x:Name="txtDaylight"
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="Daylight"
+                        FontSize="25"
+                        FontWeight="Bold" />
+
+                    <Label
+                        x:Name="infoDaylight"
+                        Grid.Row="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="{Binding SunInfo.Value.Daylight, Converter={StaticResource TimeSpanToReadableConverter}}"
+                        FontSize="25" />
+
+                    <Label
+                        x:Name="txtCity"
+                        Grid.Row="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="City"
+                        FontSize="25"
+                        FontWeight="Bold" />
+
+                    <TextBlock x:Name="infoCity"
+                               Grid.Row="4"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="25">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0:dd.MM.yyyy} @ {1}">
+                                <Binding Path="SunInfo.Value.Date" />
+                                <Binding Path="SunInfo.Value.City" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </Grid>
+
+            </Grid>
+
         </Grid>
+
     </Grid>
 
 </Window>

@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SunInfo.Services;
+using SunInfo.View;
+using SunInfo.ViewModel;
 using System.Windows;
 
-namespace SunInfo
+namespace SunInfo;
+
+public partial class App : Application
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    protected override void OnStartup(StartupEventArgs e)
     {
+        var sp = Bootstrapper.GetServiceProvider();
+        MainWindow = sp.GetRequiredService<MainWindow>();
+        MainWindow.Show();
     }
 }

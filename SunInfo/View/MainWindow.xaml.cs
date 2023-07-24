@@ -1,5 +1,4 @@
-﻿using SunInfo.Services;
-using SunInfo.ViewModel;
+﻿using SunInfo.ViewModel;
 using System.Windows;
 
 namespace SunInfo.View
@@ -9,10 +8,10 @@ namespace SunInfo.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(SunInfoViewModel sunInfoViewModel)
         {
             InitializeComponent();
-            DataContext = new SunInfoViewModel(new SunInfoService(new LocationService(new NetworkService())));
+            DataContext = sunInfoViewModel;
         }
     }
 }

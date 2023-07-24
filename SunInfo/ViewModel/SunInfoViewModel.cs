@@ -1,47 +1,32 @@
 ﻿using SunInfo.Model;
 using SunInfo.Services;
-using System;
-using System.ComponentModel;
+using SunInfo.WpfStuff;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace SunInfo.ViewModel
 {
-    internal class SunInfoViewModel : INotifyPropertyChanged
+    public class SunInfoViewModel : BaseViewModel
     {
-
-        private ISunInfoService _sunInfoService;
+        private readonly ISunInfoService _sunInfoService;
         public SunInfoViewModel(ISunInfoService sunInfoService)
         {
             _sunInfoService = sunInfoService;
-
-            Update();
-
-            _sunInfoModel = new SunInfoModel();
-
-        }
-
-        private async void Update()
-        {
-            SunInfo = await _sunInfoService.GetSunInfo();
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private SunInfoModel _sunInfoModel;
-        public SunInfoModel SunInfo
-        {
-            get => _sunInfoModel;
-            set
+            RefreshCommand = new RelayCommand(_ => 
             {
-                if (_sunInfoModel == value)
-                    return;
-
-                _sunInfoModel = value;
+                _sunfInfo = null;
                 OnPropertyChanged(nameof(SunInfo));
-            }
+            });
+        }
+        public ICommand RefreshCommand { get; }
+
+        private LazyProperty<SunInfoModel>? _sunfInfo;
+        public LazyProperty<SunInfoModel> SunInfo => _sunfInfo ??= new LazyProperty<SunInfoModel>(GetSunInfo);
+        private async Task<SunInfoModel> GetSunInfo(CancellationToken cancellationToken)
+        {
+            var result = await _sunInfoService.GetSunInfo();
+            return result;
         }
     }
 }
