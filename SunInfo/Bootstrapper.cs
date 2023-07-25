@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using SunInfo.Services;
 using SunInfo.View;
 using SunInfo.ViewModel;
@@ -10,10 +12,15 @@ public static class Bootstrapper
 {
     public static IServiceProvider GetServiceProvider()
     {
+        var logger = new LoggerConfiguration()
+            .WriteTo.File("log.txt")
+            .CreateLogger();
+
         var result = new ServiceCollection()
-              .AddServices()
-              .AddWpfStuff()
-              .BuildServiceProvider();
+            .AddServices()
+            .AddWpfStuff()
+            .AddLogging(builder => builder.AddSerilog(logger, dispose: true))
+            .BuildServiceProvider();
         return result;
     }
     public static IServiceCollection AddServices(this IServiceCollection sc)
