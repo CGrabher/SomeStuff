@@ -20,14 +20,16 @@
 
 
         <Style x:Key="MyTextStyle" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Calibri" />
-            <Setter Property="FontSize" Value="40" />
+            <Setter Property="FontFamily"
+                    Value="Britannic Bold" />
+            <Setter Property="FontSize" Value="37" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
         <Style x:Key="MyLabelStyle" TargetType="Label">
-            <Setter Property="FontFamily" Value="Calibri" />
-            <Setter Property="FontSize" Value="40" />
+            <Setter Property="FontFamily"
+                    Value="Britannic Bold" />
+            <Setter Property="FontSize" Value="37" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
@@ -39,7 +41,8 @@
 
         <Grid>
             <!--  Loading View  -->
-            <Grid x:Name="loadingGrid" Visibility="{Binding SunInfo.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid Background="#003300" 
+                x:Name="loadingGrid" Visibility="{Binding SunInfo.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                 <TextBlock
                     x:Name="loadingTextBlock"
@@ -93,7 +96,7 @@
                             <ImageBrush ImageSource="\Resources\sunriseSunset.jpg" Opacity="0.9" />
                         </Grid.Background>
 
-                        <Grid Grid.Row="0" Margin="0,20,0,0">
+                        <Grid Grid.Row="0" Margin="30,20,30,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
@@ -112,8 +115,10 @@
                                 HorizontalAlignment="Center"
                                 Content="Sunrise"
                                 FontWeight="Bold"
+                                
                                 Foreground="#542c61"
-                                Style="{StaticResource MyLabelStyle}" />
+                                Style="{StaticResource MyLabelStyle}"
+                                   FontFamily="Britannic Bold" />
 
                             <Label
                                 x:Name="txtSunset"
@@ -124,7 +129,8 @@
                                 Content="Sunset"
                                 FontWeight="Bold"
                                 Foreground="#542c61"
-                                Style="{StaticResource MyLabelStyle}" />
+                                Style="{StaticResource MyLabelStyle}"
+                                   FontFamily="Britannic Bold" />
 
 
                             <TextBlock
@@ -171,7 +177,6 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Content="Daylight"
-                            FontSize="40"
                             FontWeight="Bold"
                             Foreground="#913408"
                             Style="{StaticResource MyLabelStyle}" />
@@ -207,7 +212,6 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Content="City"
-                            FontSize="40"
                             FontWeight="Bold"
                             Foreground="#658552 "
                             Style="{StaticResource MyLabelStyle}" />
