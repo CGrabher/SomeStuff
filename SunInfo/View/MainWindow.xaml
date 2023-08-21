@@ -10,7 +10,9 @@
     Title="MainWindow"
     Width="450"
     Height="650"
+    AllowsTransparency="True"
     ResizeMode="NoResize"
+    WindowStyle="None"
     mc:Ignorable="d">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -20,235 +22,294 @@
 
 
         <Style x:Key="MyTextStyle" TargetType="TextBlock">
-            <Setter Property="FontFamily"
-                    Value="Britannic Bold" />
+            <Setter Property="FontFamily" Value="Britannic Bold" />
             <Setter Property="FontSize" Value="37" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
         <Style x:Key="MyLabelStyle" TargetType="Label">
-            <Setter Property="FontFamily"
-                    Value="Britannic Bold" />
+            <Setter Property="FontFamily" Value="Britannic Bold" />
             <Setter Property="FontSize" Value="37" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
+        <Style x:Key="MyWindowChromeStyle" TargetType="Grid">
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        </Style>
     </Window.Resources>
 
-    <!--  Nur sichtbar wenn nicht null - Grid in grid in dem danach das und noch ein error und loading grid dteckt und dann visibility ja nach zustand ändern  -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            CaptionHeight="25"
+            CornerRadius="15"
+            GlassFrameThickness="0" />
+    </WindowChrome.WindowChrome>
 
+
+
+    <!--  Nur sichtbar wenn nicht null - Grid in grid in dem danach das und noch ein error und loading grid dteckt und dann visibility ja nach zustand ändern  -->
     <Grid>
 
-        <Grid>
-            <!--  Loading View  -->
-            <Grid Background="#003300" 
-                x:Name="loadingGrid" Visibility="{Binding SunInfo.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!--  Titelleiste  -->
+        <Grid
+            Grid.Row="0"
+            Height="35"
+            VerticalAlignment="Top"
+            Background="#542c61">
+            <Button
+                x:Name="CloseButton"
+                Width="35"
+                Height="35"
+                HorizontalAlignment="Right"
+                Background="#542c61"
+                BorderBrush="Transparent"
+                Command="{Binding WindowCloseCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                Content="X"
+                FontSize="24"
+                FontWeight="Bold"
+                Foreground="#7c5c94"
+                WindowChrome.IsHitTestVisibleInChrome="True" />
 
-                <TextBlock
-                    x:Name="loadingTextBlock"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="40"
-                    FontWeight="Bold"
-                    Foreground="Green"
-                    Style="{StaticResource MyTextStyle}"
-                    Text="Loading" />
-                <ProgressBar
-                    Width="200"
-                    Height="30"
-                    Margin="0,0,0,110"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Bottom"
-                    BorderBrush="Transparent"
-                    Foreground="Green"
-                    IsIndeterminate="True" />
+            <Image
+                Width="24"
+                Height="24"
+                Margin="10,5,0,5"
+                HorizontalAlignment="Left"
+                Source="\Resources\sun.ico" />
+        </Grid>
+        <Grid Grid.Row="1">
 
-
-            </Grid>
-
-            <Grid x:Name="mainGrid" Visibility="{Binding SunInfo.IsLoading, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
-
-                <!--  Error View  -->
-                <Grid x:Name="errorGrid" Visibility="{Binding SunInfo.ErrorOnLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid>
+                <!--  Loading View  -->
+                <Grid
+                    x:Name="loadingGrid"
+                    Background="#351a3d"
+                    Style="{StaticResource MyWindowChromeStyle}"
+                    Visibility="{Binding SunInfo.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                     <TextBlock
+                        x:Name="loadingTextBlock"
+                        Margin="0,0,0,100"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="40"
                         FontWeight="Bold"
-                        Foreground="Red"
+                        Foreground="#ba76ad"
                         Style="{StaticResource MyTextStyle}"
-                        Text="Error while loading Please try again"
-                        TextWrapping="Wrap" />
+                        Text="Loading" />
+                    <!--<ProgressBar
+                        Width="200"
+                        Height="30"
+                        Margin="0,0,0,110"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        BorderBrush="#542c61"
+                        Foreground="#753d87"
+                        Background="#a876b4"
+                        IsIndeterminate="True" />-->
+
+
+
+                    <fa:ImageAwesome
+                        Width="90"
+                        Height="90"
+                        Margin="0,80,0,0"
+                        Foreground="#ba76ad"
+                        Icon="Spinner"
+                        Spin="True"
+                        SpinDuration="3" />
+
+
                 </Grid>
 
-                <!--  Data View  -->
-                <Grid x:Name="dataGrid" Visibility="{Binding SunInfo.ErrorOnLoading, Converter={StaticResource BooleanToVisibilityInverseConverter}, ConverterParameter=true}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                <Grid x:Name="mainGrid" Visibility="{Binding SunInfo.IsLoading, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
 
-                    <Grid>
+                    <!--  Error View  -->
+                    <Grid
+                        x:Name="errorGrid"
+                        Background="Black"
+                        Visibility="{Binding SunInfo.ErrorOnLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
 
-                        <Grid.Background>
-                            <ImageBrush ImageSource="\Resources\sunriseSunset.jpg" Opacity="0.9" />
-                        </Grid.Background>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="40"
+                            FontWeight="Bold"
+                            Foreground="#ba76ad"
+                            Style="{StaticResource MyTextStyle}"
+                            Text="Error while loading Please try again"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap" />
+                    </Grid>
 
-                        <Grid Grid.Row="0" Margin="30,20,30,0">
+                    <!--  Data View  -->
+                    <Grid x:Name="dataGrid" Visibility="{Binding SunInfo.ErrorOnLoading, Converter={StaticResource BooleanToVisibilityInverseConverter}, ConverterParameter=true}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid>
+
+                            <Grid.Background>
+                                <ImageBrush ImageSource="\Resources\sunriseSunset.jpg" Opacity="0.9" />
+                            </Grid.Background>
+
+                            <Grid Grid.Row="0" Margin="30,20,30,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    x:Name="txtSunrise"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,10,50,0"
+                                    HorizontalAlignment="Center"
+                                    Content="Sunrise"
+                                    FontFamily="Britannic Bold"
+                                    FontWeight="Bold"
+                                    Foreground="#542c61"
+                                    Style="{StaticResource MyLabelStyle}" />
+
+                                <Label
+                                    x:Name="txtSunset"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="50,10,0,0"
+                                    HorizontalAlignment="Center"
+                                    Content="Sunset"
+                                    FontFamily="Britannic Bold"
+                                    FontWeight="Bold"
+                                    Foreground="#542c61"
+                                    Style="{StaticResource MyLabelStyle}" />
+
+
+                                <TextBlock
+                                    x:Name="infoSunrise"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,0,50,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="25"
+                                    Foreground="#feb940"
+                                    Style="{StaticResource MyTextStyle}"
+                                    Text="{Binding SunInfo.Value.Sunrise, StringFormat=\{0:h\\:mm\}}" />
+
+                                <TextBlock
+                                    x:Name="infoSunset"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="50,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="25"
+                                    Foreground="#feb940"
+                                    Style="{StaticResource MyTextStyle}"
+                                    Text="{Binding SunInfo.Value.Sunset, Converter={StaticResource TimeWithoutSecondsConverter}}" />
+                            </Grid>
+                        </Grid>
+                        <!--    -->
+                        <Grid Grid.Row="1">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
+                            <Grid.Background>
+                                <ImageBrush ImageSource="\Resources\sun.jpg" Opacity="0.8" />
+                            </Grid.Background>
 
                             <Label
-                                x:Name="txtSunrise"
+                                x:Name="txtDaylight"
                                 Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,10,50,0"
+                                Margin="0,20,0,0"
                                 HorizontalAlignment="Center"
-                                Content="Sunrise"
+                                VerticalAlignment="Center"
+                                Content="Daylight"
                                 FontWeight="Bold"
-                                
-                                Foreground="#542c61"
-                                Style="{StaticResource MyLabelStyle}"
-                                   FontFamily="Britannic Bold" />
+                                Foreground="#913408"
+                                Style="{StaticResource MyLabelStyle}" />
 
                             <Label
-                                x:Name="txtSunset"
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Margin="50,10,0,0"
+                                x:Name="infoDaylight"
+                                Grid.Row="1"
                                 HorizontalAlignment="Center"
-                                Content="Sunset"
-                                FontWeight="Bold"
-                                Foreground="#542c61"
-                                Style="{StaticResource MyLabelStyle}"
-                                   FontFamily="Britannic Bold" />
+                                VerticalAlignment="Center"
+                                Content="{Binding SunInfo.Value.Daylight, Converter={StaticResource TimeSpanToReadableConverter}}"
+                                FontSize="25"
+                                Foreground="#fef9b7"
+                                Style="{StaticResource MyLabelStyle}" />
 
+                        </Grid>
+                        <!--    -->
+                        <Grid Grid.Row="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.Background>
+                                <ImageBrush ImageSource="\Resources\city.jpeg" Opacity="0.9" />
+                            </Grid.Background>
+
+                            <Label
+                                x:Name="txtCity"
+                                Grid.Row="0"
+                                Margin="0,20,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="City"
+                                FontWeight="Bold"
+                                Foreground="#658552 "
+                                Style="{StaticResource MyLabelStyle}" />
 
                             <TextBlock
-                                x:Name="infoSunrise"
+                                x:Name="infoCity"
                                 Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="0,0,50,0"
                                 HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
                                 FontSize="25"
-                                Foreground="#feb940"
-                                Style="{StaticResource MyTextStyle}"
-                                Text="{Binding SunInfo.Value.Sunrise, StringFormat=\{0:h\\:mm\}}" />
+                                Foreground="White"
+                                Style="{StaticResource MyTextStyle}">
 
-                            <Label
-                                x:Name="infoSunset"
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Margin="50,0,0,0"
-                                HorizontalAlignment="Center"
-                                Content="{Binding SunInfo.Value.Sunset, Converter={StaticResource TimeWithoutSecondsConverter}}"
-                                FontSize="25"
-                                Foreground="#feb940"
-                                Style="{StaticResource MyLabelStyle}" />
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0:dd.MM.yyyy} - {1}">
+                                        <Binding Path="SunInfo.Value.Date" />
+                                        <Binding Path="SunInfo.Value.City" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </Grid>
-                    </Grid>
-
-
-                    <!--    -->
-
-                    <Grid Grid.Row="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <Grid.Background>
-                            <ImageBrush ImageSource="\Resources\sun.jpg" Opacity="0.8" />
-                        </Grid.Background>
-
-                        <Label
-                            x:Name="txtDaylight"
-                            Grid.Row="0"
-                            Margin="0,20,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Content="Daylight"
-                            FontWeight="Bold"
-                            Foreground="#913408"
-                            Style="{StaticResource MyLabelStyle}" />
-
-                        <Label
-                            x:Name="infoDaylight"
-                            Grid.Row="1"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Content="{Binding SunInfo.Value.Daylight, Converter={StaticResource TimeSpanToReadableConverter}}"
-                            FontSize="25"
-                            Foreground="#fef9b7"
-                            Style="{StaticResource MyLabelStyle}" />
+                        <!--    -->
 
                     </Grid>
-                    <!--    -->
-
-                    <!--    -->
-                    <Grid Grid.Row="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <Grid.Background>
-                            <ImageBrush ImageSource="\Resources\city.jpeg" Opacity="0.9" />
-                        </Grid.Background>
-
-                        <Label
-                            x:Name="txtCity"
-                            Grid.Row="0"
-                            Margin="0,20,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Content="City"
-                            FontWeight="Bold"
-                            Foreground="#658552 "
-                            Style="{StaticResource MyLabelStyle}" />
-
-                        <TextBlock
-                            x:Name="infoCity"
-                            Grid.Row="1"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontSize="25"
-                            Foreground="White"
-                            Style="{StaticResource MyTextStyle}">
-
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0:dd.MM.yyyy} - {1}">
-                                    <Binding Path="SunInfo.Value.Date" />
-                                    <Binding Path="SunInfo.Value.City" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Grid>
-                    <!--    -->
-
                 </Grid>
             </Grid>
+            <Button
+                Width="35"
+                Height="35"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                fa:Awesome.Content="refresh"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="1"
+                Command="{Binding RefreshCommand}"
+                FontSize="20"
+                Foreground="#542c61" />
         </Grid>
-        <Button
-            Width="35"
-            Height="35"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            fa:Awesome.Content="refresh"
-            Background="Transparent"
-            BorderBrush="Transparent"
-            BorderThickness="1"
-            Command="{Binding RefreshCommand}"
-            FontSize="20"
-            Foreground="#542c61" />
     </Grid>
 </Window>

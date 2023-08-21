@@ -3,6 +3,7 @@ using SunInfo.Services;
 using SunInfo.WpfStuff;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace SunInfo.ViewModel
@@ -18,8 +19,21 @@ namespace SunInfo.ViewModel
                 _sunfInfo = null;
                 OnPropertyChanged(nameof(SunInfo));
             });
+
+            WindowCloseCommand = new RelayCommand(window => CloseWindow(window));
+
         }
         public ICommand RefreshCommand { get; }
+
+        public ICommand WindowCloseCommand { get; }
+
+        private void CloseWindow(object window)
+        {
+            if (window is Window)
+            {
+                ((Window)window).Close();
+            }
+        }
 
         private LazyProperty<SunInfoModel>? _sunfInfo;
         public LazyProperty<SunInfoModel> SunInfo => _sunfInfo ??= new LazyProperty<SunInfoModel>(GetSunInfo);

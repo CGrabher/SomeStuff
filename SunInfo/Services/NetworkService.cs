@@ -31,7 +31,7 @@ public class NetworkService : INetworkService
 
         var response = await _retryPolicy.Execute(async () =>
         {
-            var response = await _httpClient.GetAsync("/ip");
+            var response = await _httpClient.GetAsync("/ipp");
             response.EnsureSuccessStatusCode();
             return response;
         });
